@@ -31,7 +31,7 @@ setup(
     packages=find_packages(exclude=['tests']),
     entry_points={
         'console_scripts': [
-            'cvss_calculator = cvss_calculator:main',
+            'cvss_calculator = cvss.cvss_calculator:main',
         ],
     },
 )
