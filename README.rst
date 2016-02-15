@@ -18,7 +18,7 @@ Usage
 -----
 
 Library
-^^^^^^^
+~~~~~~~
 
 .. code-block:: python
 
@@ -54,7 +54,7 @@ Sample output:
     ('Medium', 'Medium', 'Medium')
 
 Interactive calculator
-^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~
 
 For interactive calculator run the following:
 
