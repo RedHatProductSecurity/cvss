@@ -10,7 +10,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='cvss',
-    version='1.0',
+    version='1.1',
     description='CVSS2/3 library with interactive calculator for Python 2 and Python 3',
     long_description=long_description,
     url='https://github.com/skontar/cvss',
