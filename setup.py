@@ -14,7 +14,7 @@ setup(
     description='CVSS2/3 library with interactive calculator for Python 2 and Python 3',
     long_description=long_description,
     url='https://github.com/skontar/cvss',
-    author='Stanislav Kontar, , Red Hat Product Security',
+    author='Stanislav Kontar, Red Hat Product Security',
     author_email='skontar@redhat.com',
     license='GPLv3+',
     classifiers=[
