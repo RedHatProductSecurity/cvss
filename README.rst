@@ -7,6 +7,12 @@ interactive calculator compatible with both Python 2 and Python 3.
 It is tested on Python 2.7 and 3.4, but there is no magic or
 dependencies, so it should run or many Python versions.
 
+
+.. image:: https://img.shields.io/travis/skontar/cvss/master.svg?label=Travis
+   :target: https://travis-ci.org/skontar/cvss/
+   :alt: Travis CI test status
+
+
 Installation
 ------------
 
