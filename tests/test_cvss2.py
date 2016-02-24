@@ -6,7 +6,7 @@ from cvss import CVSS2
 from cvss.exceptions import CVSS2MalformedError, CVSS2MandatoryError
 
 
-WD = path.dirname(path.abspath(sys.argv[0]))  # Manage to run script anywhere in the path
+WD = path.dirname(path.abspath(__file__))  # Manage to run script anywhere in the path
 
 
 class Test_CVSS2(unittest.TestCase):
