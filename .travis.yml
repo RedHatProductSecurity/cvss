@@ -1,0 +1,21 @@
+language: python
+
+# Use the new container-based Travis infrastructure.
+sudo: false
+
+python:
+  - "2.6"
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+
+install:
+  # Install cvss library.
+  - pip install -e .
+  # Install dependencies for tests.
+  - pip install -r tests/requirements.txt | cat
+
+script:
+  # Run tests and speed them up by sending them to multiple CPUs.
+  - py.test -n 2 tests
