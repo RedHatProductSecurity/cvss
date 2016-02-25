@@ -19,5 +19,5 @@ install:
 script:
   # Run tests and speed them up by sending them to multiple CPUs.
   - cd tests
-  # - py.test -n 2 tests
-  - ./run_tests.sh
+  - python test_cvss2.py
+  - python test_cvss3.py
