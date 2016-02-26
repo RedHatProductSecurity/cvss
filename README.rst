@@ -64,13 +64,13 @@ For interactive calculator run the following:
 
 ::
 
-    $ cvss_calculator.py
+    $ cvss_calculator
 
 For help on the calculator options run:
 
 ::
 
-    $ cvss_calculator.py --help
+    $ cvss_calculator --help
 
 Testing
 -------
