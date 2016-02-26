@@ -1,0 +1,20 @@
+language: python
+
+notifications:
+  email: false
+
+python:
+  - "2.6"
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+
+install:
+  - pip install -e .
+
+script:
+  - cd tests
+  - python test_cvss2.py
+  - python test_cvss3.py

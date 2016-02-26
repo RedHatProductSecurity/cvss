@@ -114,7 +114,7 @@ class CVSS3(object):
             if mandatory_metric not in self.metrics:
                 missing.append(mandatory_metric)
         if missing:
-            raise CVSS3MandatoryError('Missing mandatory metrics "{}"'.format(', '.join(missing)))
+            raise CVSS3MandatoryError('Missing mandatory metrics "{0}"'.format(', '.join(missing)))
 
     def add_missing_optional(self):
         """
@@ -158,7 +158,7 @@ class CVSS3(object):
             self.isc = (D('7.52') * (self.isc_base - D('0.029')) -
                         D('3.25') * (self.isc_base - D('0.02')) ** D('15'))
         else:  # This should never happen
-            raise RuntimeError('Invalid Scope: "{}"'.format(self.scope))
+            raise RuntimeError('Invalid Scope: "{0}"'.format(self.scope))
 
     def compute_esc(self):
         """
@@ -277,7 +277,7 @@ class CVSS3(object):
             if metric in self.original_metrics:
                 value = self.original_metrics[metric]
                 if value != 'X':
-                    vector.append('{}:{}'.format(metric, value))
+                    vector.append('{0}:{1}'.format(metric, value))
         return '/'.join(vector)
 
     def severities(self):

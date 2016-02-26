@@ -8,8 +8,12 @@ Constants for CVSS2 computations and checks. Generated using util/generate_const
 
 from __future__ import unicode_literals
 
-from collections import OrderedDict
 from decimal import Decimal as D
+
+try:
+    from collections import OrderedDict
+except ImportError:
+    from ordereddict import OrderedDict
 
 
 METRICS_ABBREVIATIONS = OrderedDict([('AV', 'Access Vector'),
