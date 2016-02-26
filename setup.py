@@ -1,11 +1,19 @@
-from setuptools import setup, find_packages
-from codecs import open
+import codecs
 from os import path
 
+from setuptools import setup, find_packages
+
+
+try:
+    from collections import OrderedDict
+except ImportError:
+    dependencies = ['ordereddict']
+else:
+    dependencies = []
 
 here = path.abspath(path.dirname(__file__))
 
-with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
+with codecs.open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
@@ -28,7 +36,8 @@ setup(
         'Programming Language :: Python :: 3.4',
     ],
     keywords='security cvss score calculator',
-    packages=find_packages(exclude=['tests']),
+    packages=find_packages(),
+    install_requires=dependencies,
     entry_points={
         'console_scripts': [
             'cvss_calculator = cvss.cvss_calculator:main',
