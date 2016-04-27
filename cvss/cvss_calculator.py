@@ -52,6 +52,7 @@ def main():
             scores = cvss_vector.scores()
             if version == 2:
                 print('CVSS2')
+                severities = None
             elif version == 3:
                 print('CVSS3')
                 severities = cvss_vector.severities()

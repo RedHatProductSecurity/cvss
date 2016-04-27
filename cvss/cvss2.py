@@ -37,6 +37,10 @@ class CVSS2(object):
         self.vector = vector
         self.metrics = {}
 
+        self.base_score = None
+        self.temporal_score = None
+        self.environmental_score = None
+
         self.parse_vector()
         self.check_mandatory()
         self.compute_base_score()
@@ -45,7 +49,7 @@ class CVSS2(object):
 
     def parse_vector(self):
         """
-        Parses matrics from the CVSS2 vector.
+        Parses metrics from the CVSS2 vector.
 
         Raises:
             CVSS2MalformedError: if vector is not in expected format
@@ -68,7 +72,7 @@ class CVSS2(object):
             if metric in METRICS_ABBREVIATIONS:
                 if value in METRICS_VALUES[metric]:
                     if metric in self.metrics:
-                        raise CVSS2MalformedError('Duplicit metric "{0}"'.format(metric))
+                        raise CVSS2MalformedError('Duplicate metric "{0}"'.format(metric))
                     self.metrics[metric] = value
                 else:
                     raise CVSS2MalformedError('Unknown value "{0}" in field "{1}"'.format(value,
@@ -193,7 +197,7 @@ class CVSS2(object):
 
     def clean_vector(self):
         """
-        Returns vector without optional metrics marked as ND and in preffered order.
+        Returns vector without optional metrics marked as ND and in preferred order.
 
         Returns:
             (str): cleaned CVSS2 with metrics in correct order

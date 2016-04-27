@@ -9,7 +9,7 @@ from cvss.exceptions import CVSS3MalformedError, CVSS3MandatoryError
 WD = path.dirname(path.abspath(sys.argv[0]))  # Manage to run script anywhere in the path
 
 
-class Test_CVSS3(unittest.TestCase):
+class TestCVSS3(unittest.TestCase):
     def run_tests_from_file(self, test_name):
         with open(path.join(WD, test_name)) as f:
             for line in f:
@@ -47,7 +47,7 @@ class Test_CVSS3(unittest.TestCase):
 
     def test_clean_vector(self):
         """
-        Tests for cleaning-up vector, where fields are not in order or some fields have X velues.
+        Tests for cleaning-up vector, where fields are not in order or some fields have X values.
         """
         v = 'S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X'
         self.assertEqual('AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L',

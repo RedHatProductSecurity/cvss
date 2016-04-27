@@ -220,7 +220,7 @@ def print_constants(metrics, names, values):
     for i, key in enumerate(metrics_values):
         values = []
         for possible_value in metrics_values[key]:
-            if metrics_values[key][possible_value] == None:
+            if metrics_values[key][possible_value] is None:
                 one_value = 'None'
             else:
                 one_value = "D('{0}')".format(metrics_values[key][possible_value])

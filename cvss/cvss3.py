@@ -41,6 +41,12 @@ class CVSS3(object):
         self.original_metrics = None
         self.missing_metrics = []
 
+        self.scope = None
+        self.modified_scope = None
+        self.base_score = None
+        self.temporal_score = None
+        self.environmental_score = None
+
         self.isc_base = None
         self.isc = None
         self.esc = None
@@ -57,7 +63,7 @@ class CVSS3(object):
 
     def parse_vector(self):
         """
-        Parses matrics from the CVSS3 vector.
+        Parses metrics from the CVSS3 vector.
 
         Raises:
             CVSS3MalformedError: if vector is not in expected format
@@ -87,7 +93,7 @@ class CVSS3(object):
             if metric in METRICS_ABBREVIATIONS:
                 if value in METRICS_VALUES[metric]:
                     if metric in self.metrics:
-                        raise CVSS3MalformedError('Duplicit metric "{0}"'.format(metric))
+                        raise CVSS3MalformedError('Duplicate metric "{0}"'.format(metric))
                     self.metrics[metric] = value
                 else:
                     raise CVSS3MalformedError('Unknown value "{0}" in field "{1}"'.format(value,
@@ -171,7 +177,7 @@ class CVSS3(object):
         """
         If (Impact sub score =< 0) 0 else,
         Scope Unchanged Round up (Minimum [(Impact + Exploitability),10])
-        Scope Changed Round up (Minumum [1.08 x (Impact + Exploitability),10])
+        Scope Changed Round up (Minimum [1.08 x (Impact + Exploitability),10])
         """
         self.compute_isc_base()
         self.compute_isc()
@@ -263,11 +269,11 @@ class CVSS3(object):
         Returns:
             (tuple of floats): Base Score, Temporal Score, Environmental Score
         """
-        return (float(self.base_score), float(self.temporal_score), float(self.environmental_score))
+        return float(self.base_score), float(self.temporal_score), float(self.environmental_score)
 
     def clean_vector(self):
         """
-        Returns vector without optional metrics marked as X and in preffered order.
+        Returns vector without optional metrics marked as X and in preferred order.
 
         Returns:
             (str): cleaned CVSS3 with metrics in correct order

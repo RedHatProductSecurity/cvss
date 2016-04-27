@@ -12,7 +12,8 @@ from __future__ import print_function, unicode_literals
 
 
 try:
-    string_input = raw_input  # @UndefinedVariable
+    # noinspection PyUnresolvedReferences
+    string_input = raw_input
 except NameError:
     string_input = input
 
@@ -32,7 +33,7 @@ def ask_interactively(version=3, all_metrics=False, no_colors=False):
     Asks user to build CVSS vector string interactively.
 
     Args:
-        cvss3 (bool): If true, CVSS3 is used, else CVSS2 is used
+        version (int): 2 or 3 for CVSS2 or CVSS3 respectively
         all_metrics (bool): If true, temporal and environmental metrics are asked, else only base
                             metrics are asked for
         no_colors (bool): If true, terminal coloring is not used in interactive mode
@@ -62,7 +63,7 @@ def ask_interactively(version=3, all_metrics=False, no_colors=False):
         # Print full metric name
         print(METRICS_ABBREVIATIONS[metric] + ':', end=' ')
 
-        # Create maetric value names with hints
+        # Create metric value names with hints
         values = METRICS_VALUE_NAMES[metric]
         value_names = []
         for value in values:

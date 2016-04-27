@@ -9,7 +9,7 @@ from cvss.exceptions import CVSS2MalformedError, CVSS2MandatoryError
 WD = path.dirname(path.abspath(sys.argv[0]))  # Manage to run script anywhere in the path
 
 
-class Test_CVSS2(unittest.TestCase):
+class TestCVSS2(unittest.TestCase):
     def run_tests_from_file(self, test_name):
         with open(path.join(WD, test_name)) as f:
             for line in f:
@@ -83,11 +83,11 @@ class Test_CVSS2(unittest.TestCase):
         v = 'AV:W/AC:L/Au:M/C:C/I:P/A:C/TD:M/IR:H/AR:H'
         self.assertRaises(CVSS2MalformedError, CVSS2, v)
 
-        # Duplicit metric
+        # Duplicate metric
         v = 'AV:A/AV:A/AC:L/Au:M/C:C/I:P/A:C/TD:M/IR:H/AR:H'
         self.assertRaises(CVSS2MalformedError, CVSS2, v)
 
-        # Duplicit metric
+        # Duplicate metric
         v = 'AV:A/AV:L/AC:L/Au:M/C:C/I:P/A:C/TD:M/IR:H/AR:H'
         self.assertRaises(CVSS2MalformedError, CVSS2, v)
 
