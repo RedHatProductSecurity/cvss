@@ -3,8 +3,8 @@ import sys
 import unittest
 
 from cvss import CVSS3
-from cvss.exceptions import CVSS3MalformedError, CVSS3MandatoryError
-
+from cvss.exceptions import CVSS3MalformedError, CVSS3MandatoryError, CVSS3RHScoreDoesNotMatch, \
+    CVSS3RHMalformedError
 
 WD = path.dirname(path.abspath(sys.argv[0]))  # Manage to run script anywhere in the path
 
@@ -17,6 +17,17 @@ class TestCVSS3(unittest.TestCase):
                 expected_scores = expected_scores.replace('(', '').replace(')', '').split(', ')
                 expected_scores = tuple(float(a) for a in expected_scores)
                 result = CVSS3(vector)
+                results_scores = result.scores()
+                self.assertEqual(expected_scores, results_scores, test_name + ' - ' + vector)
+
+    def run_rh_tests_from_file(self, test_name):
+        with open(path.join(WD, test_name)) as f:
+            for line in f:
+                vector, expected_scores = line.split(' - ')
+                expected_scores = expected_scores.replace('(', '').replace(')', '').strip().split(', ')
+                expected_scores = tuple(float(a) if a != 'None' else None for a in expected_scores)
+                tested_rh_vector = str(expected_scores[0]) + '/' + vector
+                result = CVSS3.from_rh_vector(tested_rh_vector)
                 results_scores = result.scores()
                 self.assertEqual(expected_scores, results_scores, test_name + ' - ' + vector)
 
@@ -50,15 +61,15 @@ class TestCVSS3(unittest.TestCase):
         Tests for cleaning-up vector, where fields are not in order or some fields have X values.
         """
         v = 'S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X'
-        self.assertEqual('AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L',
+        self.assertEqual('CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L',
                          CVSS3(v).clean_vector())
 
         v = 'AV:A/AC:H/PR:H/UI:R/S:U/C:N/I:L/A:N/E:P/RC:C/MAV:N/MPR:H/MUI:X/MS:U/MI:X'
-        self.assertEqual('AV:A/AC:H/PR:H/UI:R/S:U/C:N/I:L/A:N/E:P/RC:C/MAV:N/MPR:H/MS:U',
+        self.assertEqual('CVSS:3.0/AV:A/AC:H/PR:H/UI:R/S:U/C:N/I:L/A:N/E:P/RC:C/MAV:N/MPR:H/MS:U',
                          CVSS3(v).clean_vector())
 
         v = 'A:N/E:P/RC:C/MAV:N/AV:A/AC:H/S:U/C:N/I:L/MPR:H/MUI:X/MS:U/MI:X/PR:H/UI:R'
-        self.assertEqual('AV:A/AC:H/PR:H/UI:R/S:U/C:N/I:L/A:N/E:P/RC:C/MAV:N/MPR:H/MS:U',
+        self.assertEqual('CVSS:3.0/AV:A/AC:H/PR:H/UI:R/S:U/C:N/I:L/A:N/E:P/RC:C/MAV:N/MPR:H/MS:U',
                          CVSS3(v).clean_vector())
 
     def test_severities(self):
@@ -126,11 +137,11 @@ class TestCVSS3(unittest.TestCase):
         v = 'AV:W/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
-        # Duplicit metric
+        # Duplicate metric
         v = 'AV:P/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
-        # Duplicit metric
+        # Duplicate metric
         v = 'AV:P/AV:L/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
@@ -138,6 +149,32 @@ class TestCVSS3(unittest.TestCase):
         v = 'AV:P/AC:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MandatoryError, CVSS3, v)
 
+    def test_rh_vector(self):
+        """
+        Test for parsing Red Hat style of CVSS vectors, e.g. containing score.
+        """
+        self.run_rh_tests_from_file('vectors_simple3')
+
+        # Bad values
+        v = '10.0/CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:L'
+        self.assertRaises(CVSS3RHScoreDoesNotMatch, CVSS3.from_rh_vector, v)
+
+        v = '7.0/CVSS:3.0/AV:A/AC:H/PR:N/UI:N/S:U/C:L/I:L/A:H'
+        self.assertRaises(CVSS3RHScoreDoesNotMatch, CVSS3.from_rh_vector, v)
+
+        v = '6.1/CVSS:3.0/AV:A/AC:H/PR:N/UI:R/S:C/C:L/I:H/A:L'
+        self.assertRaises(CVSS3RHScoreDoesNotMatch, CVSS3.from_rh_vector, v)
+
+        # Vector cannot be split to score/vector
+        v = ''
+        self.assertRaises(CVSS3RHMalformedError, CVSS3.from_rh_vector, v)
+
+        v = '6.1|CVSS:3.0|AV:A|AC:H|PR:N|UI:R|S:C|C:L|I:H|A:L'
+        self.assertRaises(CVSS3RHMalformedError, CVSS3.from_rh_vector, v)
+
+        # Score is not float
+        v = 'ABC/CVSS:3.0/AV:A/AC:H/PR:N/UI:R/S:C/C:L/I:H/A:L'
+        self.assertRaises(CVSS3RHMalformedError, CVSS3.from_rh_vector, v)
 
 if __name__ == '__main__':
     unittest.main()
