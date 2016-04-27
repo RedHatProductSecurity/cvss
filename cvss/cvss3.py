@@ -308,12 +308,12 @@ class CVSS3(object):
         """
         return float(self.base_score), float(self.temporal_score), float(self.environmental_score)
 
-    def clean_vector(self, prefix=True):
+    def clean_vector(self, output_prefix=True):
         """
         Returns vector without optional metrics marked as X and in preferred order.
 
         Args:
-            prefix (bool): defines if CVSS vector should be printed with prefix
+            output_prefix (bool): defines if CVSS vector should be printed with prefix
 
         Returns:
             (str): cleaned CVSS3 with metrics in correct order
@@ -324,7 +324,7 @@ class CVSS3(object):
                 value = self.original_metrics[metric]
                 if value != 'X':
                     vector.append('{0}:{1}'.format(metric, value))
-        if prefix:
+        if output_prefix:
             prefix = 'CVSS:3.0/'
         else:
             prefix = ''
