@@ -24,10 +24,12 @@ for cvss_version in range(2):
         cvsslib_module = cvsslib.cvss2
         cvss_name = '2'
         not_defined = 'ND'
+        prefix = ''
     else:
         cvsslib_module = cvsslib.cvss3
         cvss_name = '3'
         not_defined = 'X'
+        prefix = 'CVSS:3.0/'
 
     # Generate constants
     constants = build_constants(METRICS[cvss_version], NAMES[cvss_version], VALUES[cvss_version])
@@ -44,7 +46,7 @@ for cvss_version in range(2):
             combo = [a for a in combo if a != '']
             vector = '/'.join(combo)
             v = cvsslib.vector.calculate_vector(vector, module=cvsslib_module)
-            print('{} - {}'.format(vector, v), file=f)
+            print('{}{} - {}'.format(prefix, vector, v), file=f)
 
     # Generate random complex vectors
     list_of_iterables = []
@@ -65,5 +67,5 @@ for cvss_version in range(2):
             except TypeError:
                 pass
             else:
-                print('{} - {}'.format(vector, v), file=f)
+                print('{}{} - {}'.format(prefix, vector, v), file=f)
                 i += 1

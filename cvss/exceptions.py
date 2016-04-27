@@ -35,6 +35,21 @@ class CVSS2MandatoryError(CVSS2Error):
     pass
 
 
+class CVSS2RHScoreDoesNotMatch(CVSS2Error):
+    """
+    Exception when parsing CVSS2 vectors in Red Hat notation, which have score not matching the
+    computed score.
+    """
+    pass
+
+
+class CVSS2RHMalformedError(CVSS2Error):
+    """
+    Exception for malformed input CVSS2 vectors in Red Hat notation.
+    """
+    pass
+
+
 class CVSS3Error(CVSSError):
     """
     General CVSS3 exception.
@@ -54,3 +69,22 @@ class CVSS3MandatoryError(CVSS3Error):
     Exception for missing mandatory fields.
     """
     pass
+
+
+class CVSS3RHScoreDoesNotMatch(CVSS3Error):
+    """
+    Exception when parsing CVSS3 vectors in Red Hat notation, which have score not matching the
+    computed score.
+    """
+    pass
+
+
+class CVSS3RHMalformedError(CVSS3Error):
+    """
+    Exception for malformed input CVSS3 vectors in Red Hat notation.
+    """
+    pass
+
+
+
+

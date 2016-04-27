@@ -15,7 +15,8 @@ import copy
 from decimal import Decimal as D, ROUND_CEILING
 
 from .constants3 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUES
-from .exceptions import CVSS3MalformedError, CVSS3MandatoryError
+from .exceptions import CVSS3MalformedError, CVSS3MandatoryError, CVSS3RHMalformedError, \
+    CVSS3RHScoreDoesNotMatch
 
 
 def round_up(value):
@@ -30,6 +31,42 @@ class CVSS3(object):
     """
     Class to hold CVSS3 vector, parsed values, and all scores.
     """
+    @staticmethod
+    def from_rh_vector(vector):
+        """
+        Creates a CVSS3 object from CVSS vector in Red Hat notation, e.g. containing base score.
+        Also checks if the score matches the vector.
+
+        Args:
+            vector (str): string specifying CVSS3 vector in Red Hat notation, fields may be out of
+                          order, fields which are not mandatory may be missing
+
+        Returns:
+            CVSS3: the generated CVSS3 object created from the vector string
+
+        Raises:
+            CVSS3RHMalformedError: if vector is not in expected format for Red Hat notation
+            CVSS3RHScoreDoesNotMatch: if vector and score do not match
+        """
+        try:
+            score, base_vector = vector.split('/', 1)
+        except ValueError:
+            raise CVSS3RHMalformedError('Malformed CVSS3 vector in Red Hat notation "{0}"'
+                                        .format(vector))
+        try:
+            score_value = float(score)
+        except ValueError:
+            raise CVSS3RHMalformedError('Malformed CVSS3 vector in Red Hat notation "{0}"'
+                                        .format(vector))
+        cvss_object = CVSS3(base_vector)
+        if cvss_object.scores()[0] == score_value:
+            return cvss_object
+        else:
+            raise CVSS3RHScoreDoesNotMatch('CVSS3 vector in Red Hat notation "{0}" has score of '
+                                           '"{1}" which does not match specified score of "{2}"'
+                                           .format(base_vector, cvss_object.scores()[0],
+                                                   score))
+
     def __init__(self, vector):
         """
         Args:
@@ -271,9 +308,12 @@ class CVSS3(object):
         """
         return float(self.base_score), float(self.temporal_score), float(self.environmental_score)
 
-    def clean_vector(self):
+    def clean_vector(self, prefix=True):
         """
         Returns vector without optional metrics marked as X and in preferred order.
+
+        Args:
+            prefix (bool): defines if CVSS vector should be printed with prefix
 
         Returns:
             (str): cleaned CVSS3 with metrics in correct order
@@ -284,7 +324,11 @@ class CVSS3(object):
                 value = self.original_metrics[metric]
                 if value != 'X':
                     vector.append('{0}:{1}'.format(metric, value))
-        return '/'.join(vector)
+        if prefix:
+            prefix = 'CVSS:3.0/'
+        else:
+            prefix = ''
+        return prefix + '/'.join(vector)
 
     def severities(self):
         """
@@ -311,6 +355,6 @@ class CVSS3(object):
         """
         Returns cleaned vector with score in Red Hat notation, e.g. score/vector.
 
-        Example: 6.5/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L
+        Example: 6.5/CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L
         """
         return str(self.scores()[0]) + '/' + self.clean_vector()

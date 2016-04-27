@@ -14,7 +14,8 @@ from __future__ import unicode_literals
 from decimal import Decimal as D
 
 from .constants2 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUES
-from .exceptions import CVSS2MalformedError, CVSS2MandatoryError
+from .exceptions import CVSS2MalformedError, CVSS2MandatoryError, CVSS2RHMalformedError, \
+    CVSS2RHScoreDoesNotMatch
 
 
 def round_to_1_decimal(value):
@@ -28,6 +29,42 @@ class CVSS2(object):
     """
     Class to hold CVSS2 vector, parsed values, and all scores.
     """
+    @staticmethod
+    def from_rh_vector(vector):
+        """
+        Creates a CVSS2 object from CVSS vector in Red Hat notation, e.g. containing base score.
+        Also checks if the score matches the vector.
+
+        Args:
+            vector (str): string specifying CVSS3 vector in Red Hat notation, fields may be out of
+                          order, fields which are not mandatory may be missing
+
+        Returns:
+            CVSS2: the generated CVSS2 object created from the vector string
+
+        Raises:
+            CVSS2RHMalformedError: if vector is not in expected format for Red Hat notation
+            CVSS2RHScoreDoesNotMatch: if vector and score do not match
+        """
+        try:
+            score, base_vector = vector.split('/', 1)
+        except ValueError:
+            raise CVSS2RHMalformedError('Malformed CVSS2 vector in Red Hat notation "{0}"'
+                                        .format(vector))
+        try:
+            score_value = float(score)
+        except ValueError:
+            raise CVSS2RHMalformedError('Malformed CVSS2 vector in Red Hat notation "{0}"'
+                                        .format(vector))
+        cvss_object = CVSS2(base_vector)
+        if cvss_object.scores()[0] == score_value:
+            return cvss_object
+        else:
+            raise CVSS2RHScoreDoesNotMatch('CVSS2 vector in Red Hat notation "{0}" has score of '
+                                           '"{1}" which does not match specified score of "{2}"'
+                                           .format(base_vector, cvss_object.scores()[0],
+                                                   score))
+
     def __init__(self, vector):
         """
         Args:
