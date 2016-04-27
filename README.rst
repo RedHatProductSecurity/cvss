@@ -8,7 +8,7 @@ CVSS
 This Python package contains CVSS v2 and v3 computation utilities and
 interactive calculator compatible with both Python 2 and Python 3.
 
-It is tested on Python versions supported by Travis, but it is simple 
+It is tested on Python versions supported by Travis, but it is simple
 enough to run on even older versions.
 
 Installation
@@ -53,7 +53,7 @@ Sample output:
     (5.0, 4.0, 4.6)
 
     S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X
-    AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L
+    CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L
     (6.5, 6.0, 5.3)
     ('Medium', 'Medium', 'Medium')
 
