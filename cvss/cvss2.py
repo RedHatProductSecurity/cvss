@@ -29,8 +29,8 @@ class CVSS2(object):
     """
     Class to hold CVSS2 vector, parsed values, and all scores.
     """
-    @staticmethod
-    def from_rh_vector(vector):
+    @classmethod
+    def from_rh_vector(cls, vector):
         """
         Creates a CVSS2 object from CVSS vector in Red Hat notation, e.g. containing base score.
         Also checks if the score matches the vector.
@@ -56,7 +56,7 @@ class CVSS2(object):
         except ValueError:
             raise CVSS2RHMalformedError('Malformed CVSS2 vector in Red Hat notation "{0}"'
                                         .format(vector))
-        cvss_object = CVSS2(base_vector)
+        cvss_object = cls(base_vector)
         if cvss_object.scores()[0] == score_value:
             return cvss_object
         else:

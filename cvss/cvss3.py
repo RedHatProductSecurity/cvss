@@ -31,8 +31,8 @@ class CVSS3(object):
     """
     Class to hold CVSS3 vector, parsed values, and all scores.
     """
-    @staticmethod
-    def from_rh_vector(vector):
+    @classmethod
+    def from_rh_vector(cls, vector):
         """
         Creates a CVSS3 object from CVSS vector in Red Hat notation, e.g. containing base score.
         Also checks if the score matches the vector.
@@ -58,7 +58,7 @@ class CVSS3(object):
         except ValueError:
             raise CVSS3RHMalformedError('Malformed CVSS3 vector in Red Hat notation "{0}"'
                                         .format(vector))
-        cvss_object = CVSS3(base_vector)
+        cvss_object = cls(base_vector)
         if cvss_object.scores()[0] == score_value:
             return cvss_object
         else:
