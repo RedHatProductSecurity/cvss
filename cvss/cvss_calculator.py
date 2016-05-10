@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Copyright (c) 2016 Red Hat, Inc.
 # Author: Stanislav Kontar, Red Hat Product Security
 # License: GPLv3+
