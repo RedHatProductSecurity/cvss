@@ -1,6 +1,6 @@
 # Copyright (c) 2016 Red Hat, Inc.
 # Author: Stanislav Kontar, Red Hat Product Security
-# License: GPLv3+
+# License: LGPLv3+
 
 from .cvss2 import CVSS2
 from .cvss3 import CVSS3

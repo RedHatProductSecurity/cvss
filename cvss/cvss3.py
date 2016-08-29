@@ -1,6 +1,6 @@
 # Copyright (c) 2016 Red Hat, Inc.
 # Author: Stanislav Kontar, Red Hat Product Security
-# License: GPLv3+
+# License: LGPLv3+
 
 """
 Implements class for CVSS3 specification as defined at
