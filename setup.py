@@ -18,18 +18,18 @@ with codecs.open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='cvss',
-    version='1.3',
+    version='1.4',
     description='CVSS2/3 library with interactive calculator for Python 2 and Python 3',
     long_description=long_description,
     url='https://github.com/skontar/cvss',
     author='Stanislav Kontar, Red Hat Product Security',
     author_email='skontar@redhat.com',
-    license='GPLv3+',
+    license='LGPLv3+',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Topic :: Security',
-        'License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)',
+        'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',

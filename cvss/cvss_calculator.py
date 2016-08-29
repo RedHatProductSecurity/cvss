@@ -1,6 +1,6 @@
 # Copyright (c) 2016 Red Hat, Inc.
 # Author: Stanislav Kontar, Red Hat Product Security
-# License: GPLv3+
+# License: LGPLv3+
 
 """
 Computes CVSS2/3 score either supplied on command line or interactively. By default it only takes
