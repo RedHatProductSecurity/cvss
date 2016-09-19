@@ -60,15 +60,15 @@ class TestCVSS3(unittest.TestCase):
         """
         Tests for cleaning-up vector, where fields are not in order or some fields have X values.
         """
-        v = 'S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X'
+        v = 'CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X'
         self.assertEqual('CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L',
                          CVSS3(v).clean_vector())
 
-        v = 'AV:A/AC:H/PR:H/UI:R/S:U/C:N/I:L/A:N/E:P/RC:C/MAV:N/MPR:H/MUI:X/MS:U/MI:X'
+        v = 'CVSS:3.0/AV:A/AC:H/PR:H/UI:R/S:U/C:N/I:L/A:N/E:P/RC:C/MAV:N/MPR:H/MUI:X/MS:U/MI:X'
         self.assertEqual('CVSS:3.0/AV:A/AC:H/PR:H/UI:R/S:U/C:N/I:L/A:N/E:P/RC:C/MAV:N/MPR:H/MS:U',
                          CVSS3(v).clean_vector())
 
-        v = 'A:N/E:P/RC:C/MAV:N/AV:A/AC:H/S:U/C:N/I:L/MPR:H/MUI:X/MS:U/MI:X/PR:H/UI:R'
+        v = 'CVSS:3.0/A:N/E:P/RC:C/MAV:N/AV:A/AC:H/S:U/C:N/I:L/MPR:H/MUI:X/MS:U/MI:X/PR:H/UI:R'
         self.assertEqual('CVSS:3.0/AV:A/AC:H/PR:H/UI:R/S:U/C:N/I:L/A:N/E:P/RC:C/MAV:N/MPR:H/MS:U',
                          CVSS3(v).clean_vector())
 
@@ -76,43 +76,43 @@ class TestCVSS3(unittest.TestCase):
         """
         Tests for computing severities.
         """
-        v = 'AV:N/AC:H/PR:L/UI:N/S:C/C:N/I:N/A:N'
+        v = 'CVSS:3.0/AV:N/AC:H/PR:L/UI:N/S:C/C:N/I:N/A:N'
         self.assertEqual(('None', 'None', 'None'), CVSS3(v).severities(), v)
 
-        v = 'AV:P/AC:H/PR:L/UI:R/S:U/C:N/I:L/A:N'
+        v = 'CVSS:3.0/AV:P/AC:H/PR:L/UI:R/S:U/C:N/I:L/A:N'
         self.assertEqual(('Low', 'Low', 'Low'), CVSS3(v).severities(), v)
 
-        v = 'AV:N/AC:H/PR:L/UI:R/S:U/C:N/I:L/A:N'
+        v = 'CVSS:3.0/AV:N/AC:H/PR:L/UI:R/S:U/C:N/I:L/A:N'
         self.assertEqual(('Low', 'Low', 'Low'), CVSS3(v).severities(), v)
 
-        v = 'AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:N/A:L'
+        v = 'CVSS:3.0/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:N/A:L'
         self.assertEqual(('Low', 'Low', 'Low'), CVSS3(v).severities(), v)
 
-        v = 'AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L'
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:L'
         self.assertEqual(('Medium', 'Medium', 'Medium'), CVSS3(v).severities(), v)
 
-        v = 'AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:L'
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:L/A:L'
         self.assertEqual(('Medium', 'Medium', 'Medium'), CVSS3(v).severities(), v)
 
-        v = 'AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:N'
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:N'
         self.assertEqual(('Medium', 'Medium', 'Medium'), CVSS3(v).severities(), v)
 
-        v = 'AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L'
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L'
         self.assertEqual(('High', 'High', 'High'), CVSS3(v).severities(), v)
 
-        v = 'AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:H'
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:H'
         self.assertEqual(('High', 'High', 'High'), CVSS3(v).severities(), v)
 
-        v = 'AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:L/A:N'
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:L/A:N'
         self.assertEqual(('Critical', 'Critical', 'Critical'), CVSS3(v).severities(), v)
 
-        v = 'AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:H'
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:H'
         self.assertEqual(('Critical', 'Critical', 'Critical'), CVSS3(v).severities(), v)
 
-        v = 'AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:P/RL:W/IR:M/AR:H/MAV:N/MAC:H/MPR:L/MUI:N/MC:N/MI:N'
+        v = 'CVSS:3.0/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:P/RL:W/IR:M/AR:H/MAV:N/MAC:H/MPR:L/MUI:N/MC:N/MI:N'
         self.assertEqual(('High', 'High', 'Medium'), CVSS3(v).severities(), v)
 
-        v = 'AV:P/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N/E:H/RC:U/CR:M/MAV:P/MAC:L/MUI:R/MC:N/MI:N'
+        v = 'CVSS:3.0/AV:P/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N/E:H/RC:U/CR:M/MAV:P/MAC:L/MUI:R/MC:N/MI:N'
         self.assertEqual(('Medium', 'Low', 'None'), CVSS3(v).severities(), v)
 
     def test_exceptions(self):
@@ -126,28 +126,32 @@ class TestCVSS3(unittest.TestCase):
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
         # Missing ':'
-        v = 'AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MCL'
+        v = 'CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MCL'
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
         # Unknown metric
-        v = 'AX:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
+        v = 'CVSS:3.0/AX:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
         # Unknown value
-        v = 'AV:W/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
+        v = 'CVSS:3.0/AV:W/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
         # Duplicate metric
-        v = 'AV:P/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
+        v = 'CVSS:3.0/AV:P/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
         # Duplicate metric
-        v = 'AV:P/AV:L/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
+        v = 'CVSS:3.0/AV:P/AV:L/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
         # Missing mandatory
-        v = 'AV:P/AC:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
+        v = 'CVSS:3.0/AV:P/AC:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MandatoryError, CVSS3, v)
+
+        # Missing prefix
+        v = 'AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
+        self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
     def test_rh_vector(self):
         """

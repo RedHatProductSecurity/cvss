@@ -118,7 +118,8 @@ class CVSS3(object):
             except IndexError:
                 raise CVSS3MalformedError('Malformed CVSS3 vector "{0}"'.format(self.vector))
         else:
-            fields = self.vector.split('/')
+            raise CVSS3MalformedError('Malformed CVSS3 vector "{0}" is missing mandatory prefix'
+                                      .format(self.vector))
 
         # Parse fields
         for field in fields:
