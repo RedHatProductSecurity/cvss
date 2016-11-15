@@ -11,7 +11,7 @@ The library is compatible with both Python 2 and Python 3.
 
 from __future__ import unicode_literals
 
-from decimal import Decimal as D
+from decimal import Decimal as D, ROUND_HALF_UP
 
 from .constants2 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUES
 from .exceptions import CVSS2MalformedError, CVSS2MandatoryError, CVSS2RHMalformedError, \
@@ -22,7 +22,7 @@ def round_to_1_decimal(value):
     """
     Round to one decimal.
     """
-    return (value * D('10.0')).to_integral_exact() / D('10.0')
+    return value.quantize(D('0.1'), rounding=ROUND_HALF_UP)
 
 
 class CVSS2(object):
@@ -173,7 +173,7 @@ class CVSS2(object):
 
         exploitability = (D('20') * self.get_value('AV') * self.get_value('AC') *
                           self.get_value('Au'))
-        f_impact = 0 if impact == D('0') else D('1.176')
+        f_impact = D('0') if impact == D('0') else D('1.176')
         return round_to_1_decimal(((D('0.6') * impact) + (D('0.4') * exploitability) -
                                    D('1.5')) * f_impact)
 
@@ -202,7 +202,7 @@ class CVSS2(object):
         if all(self.metrics.get(a, 'ND') == 'ND' for a in ['E', 'RL', 'RC']):
             self.temporal_score = None
         else:
-            self.temporal_score = self.temporal_score_equation()
+            self.temporal_score = max(D('0.0'), self.temporal_score_equation())
 
     def compute_environmental_score(self):
         """
@@ -216,10 +216,11 @@ class CVSS2(object):
             self.environmental_score = None
         else:
             temporal_score_adjusted = self.temporal_score_equation(adjusted_impact=True)
-            self.environmental_score = round_to_1_decimal((temporal_score_adjusted +
+            raw_environmental_score = round_to_1_decimal((temporal_score_adjusted +
                                                           (D('10') - temporal_score_adjusted) *
-                                                           self.get_value('CDP')) *
-                                                          self.get_value('TD'))
+                                                          self.get_value('CDP')) *
+                                                         self.get_value('TD'))
+            self.environmental_score = max(D('0.0'), raw_environmental_score)
 
     def scores(self):
         """
