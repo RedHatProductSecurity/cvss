@@ -40,6 +40,8 @@ class TestCVSS2(unittest.TestCase):
     def test_calculator(self):
         """
         Hand picked vectors using https://nvd.nist.gov/CVSS-v2-Calculator . 3 vectors.
+
+        Another 2 vectors added based on Issue #10, one of them does not match the calculator.
         """
         self.run_tests_from_file('vectors_calculator2')
 

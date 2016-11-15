@@ -1,3 +1,5 @@
 AV:A/AC:M/Au:S/C:N/I:N/A:P - (2.3, None, None)
 AV:A/AC:M/Au:N/C:C/I:N/A:P/E:POC/RL:W/RC:UC - (6.4, 4.9, None)
 AV:A/AC:H/Au:S/C:N/I:P/A:P/E:POC/RL:OF/RC:C/CDP:LM/TD:M/CR:M/IR:L/AR:L - (2.9, 2.3, 2.8)
+AV:N/AC:L/Au:S/C:C/I:C/A:C/E:U/RL:U/RC:C - (9.0, 7.7, None)
+AV:N/AC:L/Au:S/C:C/I:C/A:C/E:F/RL:U/RC:C - (9.0, 8.6, None)
