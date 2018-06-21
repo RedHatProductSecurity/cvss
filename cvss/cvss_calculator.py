@@ -66,7 +66,7 @@ def main():
                     print(scores[i])
             print('Cleaned vector:       ', cvss_vector.clean_vector())
             print('Red Hat vector:       ', cvss_vector.rh_vector())
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, EOFError):
         print()
 
 
