@@ -2,6 +2,8 @@ from os import path
 import sys
 import unittest
 
+sys.path.insert(0, path.dirname(path.dirname(path.abspath(__file__))))
+
 from cvss import CVSS2
 from cvss.exceptions import CVSS2MalformedError, CVSS2MandatoryError, CVSS2RHScoreDoesNotMatch, \
     CVSS2RHMalformedError
