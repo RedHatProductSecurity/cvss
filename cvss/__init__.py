@@ -8,4 +8,4 @@ from .exceptions import CVSSError, CVSS2Error, CVSS3Error
 from .interactive import ask_interactively
 
 
-__version__ = '1.7'
+__version__ = '1.8'
