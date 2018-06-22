@@ -155,6 +155,10 @@ class TestCVSS3(unittest.TestCase):
         v = 'AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
+        # Empty field
+        'CVSS:3.0//AC:H/PR:H/UI:R/S:U/C:L/I:N/A:L'
+        self.assertRaises(CVSS3MalformedError, CVSS3, v)
+
     def test_rh_vector(self):
         """
         Test for parsing Red Hat style of CVSS vectors, e.g. containing score.

@@ -110,6 +110,10 @@ class TestCVSS2(unittest.TestCase):
         v = 'AV:L/AC:L/Au:M/C:C/I:P/TD:M/IR:H/AR:H'
         self.assertRaises(CVSS2MandatoryError, CVSS2, v)
 
+        # Empty field
+        v = 'AV:L//Au:M/C:C/I:P/TD:M/IR:H/AR:H'
+        self.assertRaises(CVSS2MalformedError, CVSS2, v)
+
     def test_rh_vector(self):
         """
         Test for parsing Red Hat style of CVSS vectors, e.g. containing score.

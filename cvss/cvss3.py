@@ -123,6 +123,9 @@ class CVSS3(object):
 
         # Parse fields
         for field in fields:
+            if field == '':
+                raise CVSS3MalformedError('Empty field in CVSS3 vector "{0}"'.format(self.vector))
+
             try:
                 metric, value = field.split(':')
             except ValueError:
