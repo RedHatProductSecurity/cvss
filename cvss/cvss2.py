@@ -101,6 +101,9 @@ class CVSS2(object):
 
         # Parse fields
         for field in fields:
+            if field == '':
+                raise CVSS2MalformedError('Empty field in CVSS2 vector "{0}"'.format(self.vector))
+
             try:
                 metric, value = field.split(':')
             except ValueError:
