@@ -363,7 +363,7 @@ class CVSS3(object):
         """
         return str(self.scores()[0]) + '/' + self.clean_vector()
 
-    def __eq__(self, o: object) -> bool:
+    def __eq__(self, o):
         if isinstance(o, CVSS3):
             return self.vector.__eq__(o.vector)
         return NotImplemented
