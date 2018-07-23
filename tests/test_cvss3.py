@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, path.dirname(path.dirname(path.abspath(__file__))))
 
-from cvss import CVSS3
+from cvss import CVSS3, parser, CVSS2
 from cvss.exceptions import CVSS3MalformedError, CVSS3MandatoryError, CVSS3RHScoreDoesNotMatch, \
     CVSS3RHMalformedError
 
@@ -185,6 +185,110 @@ class TestCVSS3(unittest.TestCase):
         # Score is not float
         v = 'ABC/CVSS:3.0/AV:A/AC:H/PR:N/UI:R/S:C/C:L/I:H/A:L'
         self.assertRaises(CVSS3RHMalformedError, CVSS3.from_rh_vector, v)
+
+    def test_parse_from_text_cvss3(self):
+        i = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
+        e = [CVSS3(i)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        i = 'CVSS'
+        e = []
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Truncated vector
+        i = 'CVSS:3'
+        e = []
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        i = 'CVSS:3.0'
+        e = []
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        i = 'CVSS:3.0/'
+        e = []
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        i = 'CVSS:3.0/AV:N'
+        e = []
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        i = 'CVSS:3.0/AV:X'
+        e = []
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        i = 'CVSS:3.0/AV:ZZZ'
+        e = []
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        i = 'CVSS:3.0/AV:L/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N/MAV:A/MAC:L/MPR:N/MUI:N/MS:U/MC:N/MI:N/MA:N'
+        e = [CVSS3(i)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Missing mandatory prefix
+        i = 'AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:N'
+        e = []
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        v1 = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H'
+        v2 = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H'
+        i = ' '.join([v1, v2])
+        e = [CVSS3(v1), CVSS3(v2)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Missing space after end of sentence and before vector
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H'
+        i = '.' + v
+        e = [CVSS3(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # End of sentence
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H'
+        i = v + '.'
+        e = [CVSS3(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Correct text
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
+        i = 'xxx ' + v
+        e = [CVSS3(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
+        i = v + ' xxx'
+        e = [CVSS3(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Missing space after dot before vector
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
+        i = 'xxx.' + v
+        e = [CVSS3(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Missing space
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
+        i = v + 'xxx'
+        e = [CVSS3(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
+        i = 'xxx' + v
+        e = [CVSS3(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+    def test_parse_from_text_both_versions(self):
+        v1 = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H'
+        v2 = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
+        i = 'xxx. ' + v1 + ' ' + v2 + '. xxx'
+        e = [CVSS3(v1), CVSS2(v2)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Missing spaces around sentence
+        v1 = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H'
+        v2 = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
+        i = 'xxx.' + v1 + ' ' + v2 + '.xxx'
+        e = [CVSS3(v1), CVSS2(v2)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
 
 if __name__ == '__main__':
     unittest.main()
