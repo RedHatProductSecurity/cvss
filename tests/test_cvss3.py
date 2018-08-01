@@ -232,10 +232,10 @@ class TestCVSS3(unittest.TestCase):
         self.assertEqual(parser.parse_cvss_from_text(i), e)
 
         v1 = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H'
-        v2 = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:H'
+        v2 = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N'
         i = ' '.join([v1, v2])
-        e = [CVSS3(v1), CVSS3(v2)]
-        self.assertEqual(parser.parse_cvss_from_text(i), e)
+        e = {CVSS3(v1), CVSS3(v2)}
+        self.assertEqual(set(parser.parse_cvss_from_text(i)), e)
 
         # Missing space after end of sentence and before vector
         v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H'
@@ -281,20 +281,21 @@ class TestCVSS3(unittest.TestCase):
         v1 = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H'
         v2 = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
         i = 'xxx. ' + v1 + ' ' + v2 + '. xxx'
-        e = [CVSS3(v1), CVSS2(v2)]
-        self.assertEqual(parser.parse_cvss_from_text(i), e)
+        e = {CVSS3(v1), CVSS2(v2)}
+        self.assertEqual(set(parser.parse_cvss_from_text(i)), e)
 
         # Missing spaces around sentence
         v1 = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H'
         v2 = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
         i = 'xxx.' + v1 + ' ' + v2 + '.xxx'
-        e = [CVSS3(v1), CVSS2(v2)]
-        self.assertEqual(parser.parse_cvss_from_text(i), e)
+        e = {CVSS3(v1), CVSS2(v2)}
+        self.assertEqual(set(parser.parse_cvss_from_text(i)), e)
+
     def test_parse_from_text_multiple_vectors_same_cvss(self):
         v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
         e = [CVSS3(v)]
         i = 'Title: {}\nThis is an overview of {} problem.\nLinks: {}'.format(v,v,v)
-        self.assertEqual(parse_cvss_from_text(i), e)
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
 
 
 if __name__ == '__main__':
