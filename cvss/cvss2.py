@@ -261,5 +261,5 @@ class CVSS2(object):
 
     def __eq__(self, o):
         if isinstance(o, CVSS2):
-            return self.vector.__eq__(o.vector)
+            return self.clean_vector().__eq__(o.clean_vector())
         return NotImplemented
