@@ -236,7 +236,7 @@ class TestCVSS3(unittest.TestCase):
         i = ' '.join([v1, v2])
         e = set()
         e.add(CVSS3(v1))
-        e.add(CVSS2(v2))
+        e.add(CVSS3(v2))
         self.assertEqual(set(parser.parse_cvss_from_text(i)), e)
 
         # Correct text
@@ -266,19 +266,6 @@ class TestCVSS3(unittest.TestCase):
         # Missing space after dot before vector
         v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
         i = 'xxx.' + v
-        e = [CVSS3(v)]
-        self.assertEqual(parser.parse_cvss_from_text(i), e)
-
-    @unittest.skip('Current version of parse_cvss_from_text() does not support these cases')
-    def test_parse_from_text_optional_missing_space(self):
-        # Missing space
-        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
-        i = v + 'xxx'
-        e = [CVSS3(v)]
-        self.assertEqual(parser.parse_cvss_from_text(i), e)
-
-        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
-        i = 'xxx' + v
         e = [CVSS3(v)]
         self.assertEqual(parser.parse_cvss_from_text(i), e)
 
