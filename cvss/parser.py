@@ -18,7 +18,7 @@ def parse_cvss_from_text(text):
         A list of CVSS objects.
     """
     # Looks for substrings which resemble CVSS2 or CVSS3 vectors.
-    # CVSS3 vector starts with 'CVSS:3.0/' prefix - which is not extracted.
+    # CVSS3 vector starts with 'CVSS:3.0/' prefix - matched by non-capturing group.
     # Minimum vector length is 26.
     matches = re.compile(r'(?:CVSS:3\.0/)?[A-Za-z:/]{26,}').findall(text)
 
