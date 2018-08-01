@@ -1,7 +1,8 @@
 import re
 
-from cvss import CVSS3, CVSS2
-from cvss.exceptions import CVSSError
+from .cvss2 import CVSS2
+from .cvss3 import CVSS3
+from .exceptions import CVSSError
 
 
 def parse_cvss_from_text(text):

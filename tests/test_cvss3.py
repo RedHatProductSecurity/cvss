@@ -4,7 +4,9 @@ import unittest
 
 sys.path.insert(0, path.dirname(path.dirname(path.abspath(__file__))))
 
-from cvss import CVSS3, parser, CVSS2
+from cvss.cvss3 import CVSS3
+from cvss.cvss2 import CVSS2
+from cvss import parser
 from cvss.exceptions import CVSS3MalformedError, CVSS3MandatoryError, CVSS3RHScoreDoesNotMatch, \
     CVSS3RHMalformedError
 
