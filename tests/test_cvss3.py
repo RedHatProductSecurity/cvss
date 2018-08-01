@@ -291,7 +291,7 @@ class TestCVSS3(unittest.TestCase):
     def test_parse_from_text_multiple_vectors_same_cvss(self):
         v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
         e = [CVSS3(v)]
-        i = 'Title: {}\nThis is an overview of {} problem.\nLinks: {}'.format(v,v,v)
+        i = 'Title: {0}\nThis is an overview of {0} problem.\nLinks: {0}'.format(v)
         self.assertEqual(parser.parse_cvss_from_text(i), e)
 
 
