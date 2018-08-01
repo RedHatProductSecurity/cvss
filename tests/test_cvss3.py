@@ -237,6 +237,18 @@ class TestCVSS3(unittest.TestCase):
         e = {CVSS3(v1), CVSS3(v2)}
         self.assertEqual(set(parser.parse_cvss_from_text(i)), e)
 
+        # Correct text
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
+        i = 'xxx ' + v
+        e = [CVSS3(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
+        i = v + ' xxx'
+        e = [CVSS3(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+    def test_parse_from_text_optional_sentence_cases(self):
         # Missing space after end of sentence and before vector
         v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H'
         i = '.' + v
@@ -249,23 +261,13 @@ class TestCVSS3(unittest.TestCase):
         e = [CVSS3(v)]
         self.assertEqual(parser.parse_cvss_from_text(i), e)
 
-        # Correct text
-        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
-        i = 'xxx ' + v
-        e = [CVSS3(v)]
-        self.assertEqual(parser.parse_cvss_from_text(i), e)
-
-        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
-        i = v + ' xxx'
-        e = [CVSS3(v)]
-        self.assertEqual(parser.parse_cvss_from_text(i), e)
-
         # Missing space after dot before vector
         v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
         i = 'xxx.' + v
         e = [CVSS3(v)]
         self.assertEqual(parser.parse_cvss_from_text(i), e)
 
+    def test_parse_from_text_optional_missing_space(self):
         # Missing space
         v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H'
         i = v + 'xxx'
@@ -284,6 +286,7 @@ class TestCVSS3(unittest.TestCase):
         e = {CVSS3(v1), CVSS2(v2)}
         self.assertEqual(set(parser.parse_cvss_from_text(i)), e)
 
+    def test_parse_from_text_both_versions_optional(self):
         # Missing spaces around sentence
         v1 = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:H/A:H'
         v2 = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
