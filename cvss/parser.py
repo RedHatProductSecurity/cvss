@@ -6,23 +6,32 @@ from .exceptions import CVSSError
 
 
 def parse_cvss_from_text(text):
-    # Vector may start with 'CVSS:3.0' substring - which is not extracted.
-    # Vector starts and ends with capitals
-    # which makes parsing from incorrectly spaced words easier.
-    matches = re.compile(r'((?:CVSS:3\.0/)?[A-Z][A-Za-z:/]+[A-Z])').findall(text)
+    """
+    Parses CVSS2 and CVSS3 vectors from arbitrary text and returns a list of CVSS objects.
 
-    min_vector_length = 26
-    cvsss = []
+    Parses text for substrings that look similar to CVSS vector
+    and feeds these matches to CVSS constructor.
+
+    Args:
+        text (str): arbitrary text
+    Returns:
+        A list of CVSS objects.
+    """
+    # Looks for substrings which resemble CVSS2 or CVSS3 vectors.
+    # CVSS3 vector starts with 'CVSS:3.0/' prefix - which is not extracted.
+    # Minimum vector length is 26.
+    matches = re.compile(r'(?:CVSS:3\.0/)?[A-Za-z:/]{26,}').findall(text)
+
+    cvsss = set()
     for match in matches:
-        if len(match) >= min_vector_length:
-            try:
-                if match.startswith('CVSS:3.0'):
-                    cvss = CVSS3(match)
-                else:
-                    cvss = CVSS2(match)
+        try:
+            if match.startswith('CVSS:3.0'):
+                cvss = CVSS3(match)
+            else:
+                cvss = CVSS2(match)
 
-                cvsss.append(cvss)
-            except (CVSSError, KeyError):
-                pass
+            cvsss.add(cvss)
+        except (CVSSError, KeyError):
+            pass
 
-    return cvsss
+    return list(cvsss)
