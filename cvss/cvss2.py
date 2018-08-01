@@ -263,3 +263,6 @@ class CVSS2(object):
         if isinstance(o, CVSS2):
             return self.clean_vector().__eq__(o.clean_vector())
         return NotImplemented
+
+    def __hash__(self) -> int:
+        return hash(self.clean_vector())
