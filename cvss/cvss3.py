@@ -368,5 +368,5 @@ class CVSS3(object):
             return self.clean_vector().__eq__(o.clean_vector())
         return NotImplemented
 
-    def __hash__(self) -> int:
+    def __hash__(self):
         return hash(self.clean_vector())
