@@ -4,7 +4,8 @@ import unittest
 
 sys.path.insert(0, path.dirname(path.dirname(path.abspath(__file__))))
 
-from cvss import CVSS2
+from cvss.cvss2 import CVSS2
+from cvss import parser
 from cvss.exceptions import CVSS2MalformedError, CVSS2MandatoryError, CVSS2RHScoreDoesNotMatch, \
     CVSS2RHMalformedError
 
@@ -140,6 +141,72 @@ class TestCVSS2(unittest.TestCase):
         # Score is not float
         v = 'ABC/AV:L/AC:H/Au:M/C:C/I:P/A:P'
         self.assertRaises(CVSS2RHMalformedError, CVSS2.from_rh_vector, v)
+
+    def test_parse_from_text_cvss2(self):
+        """
+        Tests for parsing CVSS from text.
+        """
+        i = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
+        e = [CVSS2(i)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        i = 'AV:L/AC:L/Au:S/C:P/I:P/A:P/E:U/RC:C/CDP:LM/TD:L/IR:H/AR:M'
+        e = [CVSS2(i)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        i = 'AV:L/AC:M/Au:S/C:N/I:P/A:C/E:U/RL:OF/RC:UR/CDP:N/TD:L/CR:H/IR:H/AR:H'
+        e = [CVSS2(i)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Bad value
+        i = 'AV:N/AC:L/Au:N/C:C/I:C/A:X'
+        e = []
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Truncated vector
+        i = 'AV:N/AC:'
+        e = []
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        i = ''
+        e = []
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Correct parsing
+        v = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
+        i = 'xxx ' + v
+        e = [CVSS2(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        v = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
+        i = v + ' xxx'
+        e = [CVSS2(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # End of sentence
+        v = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
+        i = v + '.'
+        e = [CVSS2(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Missing space after dot before vector
+        v = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
+        i = 'xxx.' + v
+        e = [CVSS2(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+        # Missing space after dot after vector
+        v = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
+        i = v + '.xxx'
+        e = [CVSS2(v)]
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+    def test_parse_from_text_multiple_vectors_same_cvss(self):
+        v = 'AV:N/AC:L/Au:N/C:C/I:C/A:C'
+        e = [CVSS2(v)]
+        i = 'Title: {0}\nThis is an overview of {0} problem.\nLinks: {0}'.format(v)
+        self.assertEqual(parser.parse_cvss_from_text(i), e)
+
 
 if __name__ == '__main__':
     unittest.main()

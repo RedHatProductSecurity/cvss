@@ -258,3 +258,11 @@ class CVSS2(object):
         Example: 5.0/AV:L/AC:L/Au:M/C:N/I:P/A:C/E:U/RL:W/CDP:L/TD:H/AR:M
         """
         return str(self.scores()[0]) + '/' + self.clean_vector()
+
+    def __eq__(self, o):
+        if isinstance(o, CVSS2):
+            return self.clean_vector().__eq__(o.clean_vector())
+        return NotImplemented
+
+    def __hash__(self):
+        return hash(self.clean_vector())

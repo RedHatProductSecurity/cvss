@@ -362,3 +362,11 @@ class CVSS3(object):
         Example: 6.5/CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L
         """
         return str(self.scores()[0]) + '/' + self.clean_vector()
+
+    def __eq__(self, o):
+        if isinstance(o, CVSS3):
+            return self.clean_vector().__eq__(o.clean_vector())
+        return NotImplemented
+
+    def __hash__(self):
+        return hash(self.clean_vector())
