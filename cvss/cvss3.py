@@ -93,6 +93,7 @@ class CVSS3(object):
 
         self.parse_vector()
         self.check_mandatory()
+        self.handle_scope()
         self.add_missing_optional()
         self.compute_base_score()
         self.compute_temporal_score()
@@ -143,7 +144,10 @@ class CVSS3(object):
                 raise CVSS3MalformedError('Unknown metric "{0}" in field "{1}"'.format(metric,
                                                                                        field))
 
-        # Handle scope
+    def handle_scope(self):
+        """
+        Sets scope and modified scope variables based on S and MS metrics
+        """
         self.scope = self.metrics['S']
         self.modified_scope = self.metrics.get('MS', None)
         if self.modified_scope in [None, 'X']:
