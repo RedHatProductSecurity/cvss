@@ -149,8 +149,12 @@ class TestCVSS3(unittest.TestCase):
         v = 'CVSS:3.0/AV:P/AV:L/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
-        # Missing mandatory
+        # Missing mandatory metric PR
         v = 'CVSS:3.0/AV:P/AC:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
+        self.assertRaises(CVSS3MandatoryError, CVSS3, v)
+
+        # Missing mandatory metric S
+        v = 'CVSS:3.0/AV:N/AC:L/PR:N/UI:N/C:H/I:H/A:H'
         self.assertRaises(CVSS3MandatoryError, CVSS3, v)
 
         # Missing prefix
