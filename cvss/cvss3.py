@@ -268,13 +268,13 @@ class CVSS3(object):
     def compute_modified_isc(self):
         """
         If Modified Scope Unchanged    6.42 x [ISCModified]
-        If Modified Scope Changed    7.52 x [ISCModified-0.029] - 3.25 x [ISCModified-0.02]^15
+        If Modified Scope Changed 7.52 x [ISCBase-0.029] - 3.25 x [ISCBase×0.9731-0.02]^13
         """
         if self.modified_scope == 'U':
             self.modified_isc = D('6.42') * self.modified_isc_base
         else:  # Modified scope has always value, if not defined then matches Scope
-            self.modified_isc = (D('7.52') * (self.modified_isc_base - D('0.029')) -
-                                 D('3.25') * (self.modified_isc_base - D('0.02')) ** D('15'))
+            self.modified_isc = (D('7.52') * (self.isc_base - D('0.029')) -
+                        D('3.25') * (self.isc_base * D('0.9731') - D('0.02')) ** D('13'))
 
     def compute_modified_esc(self):
         """
