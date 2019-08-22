@@ -12,6 +12,7 @@ The library is compatible with both Python 2 and Python 3.
 from __future__ import unicode_literals
 
 import copy
+import math
 from decimal import Decimal as D, ROUND_CEILING
 
 from .constants3 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUES
@@ -21,10 +22,15 @@ from .exceptions import CVSS3MalformedError, CVSS3MandatoryError, CVSS3RHMalform
 
 def round_up(value):
     """
-    Round up is defined as the smallest number, specified to one decimal place, that is equal to
-    or higher than its input. For example, Round up (4.02) is 4.1; and Round up (4.00) is 4.0.
+    See https://www.first.org/cvss/v3.1/specification-document#t23 for suggested rounding
+    formula.
     """
-    return value.quantize(D('0.1'), rounding=ROUND_CEILING)
+    int_input = int(round(D(value) * 100000))
+
+    if (int_input % 10000) == 0:
+        return int_input / 100000.0
+    else:
+        return (math.floor(int_input / 10000) + 1) / 10.0
 
 
 class CVSS3(object):
@@ -241,8 +247,9 @@ class CVSS3(object):
         """
         Round up(BaseScore x ExploitCodeMaturity x RemediationLevel x ReportConfidence)
         """
-        self.temporal_score = round_up(self.base_score * self.get_value('E') *
+        self.temporal_score = round_up(D(self.base_score) * self.get_value('E') *
                                        self.get_value('RL') * self.get_value('RC'))
+
 
     def compute_modified_isc_base(self):
         """
@@ -302,7 +309,7 @@ class CVSS3(object):
                 modified = round_up(min((self.modified_isc + self.modified_esc), D('10')))
             else:
                 modified = round_up(min(D('1.08') * (self.modified_isc + self.modified_esc), D('10')))
-            self.environmental_score = round_up(modified *
+            self.environmental_score = round_up(D(modified) *
                                                 self.get_value('E') *
                                                 self.get_value('RL') *
                                                 self.get_value('RC'))
