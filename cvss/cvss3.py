@@ -118,8 +118,8 @@ class CVSS3(object):
         if self.vector.endswith('/'):
             raise CVSS3MalformedError('Malformed CVSS3 vector, trailing "/"')
 
-        # Handle 'CVSS:3.0' in the beginning of vector and split vector
-        if self.vector.startswith('CVSS:3.0'):
+        # Handle 'CVSS:3.0' or 'CVSS:3.1' in the beginning of vector and split vector
+        if self.vector.startswith('CVSS:3.0') or self.vector.startswith('CVSS:3.1'):
             try:
                 fields = self.vector.split('/')[1:]
             except IndexError:
@@ -340,7 +340,10 @@ class CVSS3(object):
                 if value != 'X':
                     vector.append('{0}:{1}'.format(metric, value))
         if output_prefix:
-            prefix = 'CVSS:3.0/'
+            if self.vector.startswith('CVSS:3.0'):
+                prefix = 'CVSS:3.0/'
+            elif self.vector.startswith('CVSS:3.1'):
+                prefix = 'CVSS:3.1/'
         else:
             prefix = ''
         return prefix + '/'.join(vector)
