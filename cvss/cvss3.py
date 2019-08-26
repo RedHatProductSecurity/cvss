@@ -358,7 +358,7 @@ class CVSS3(object):
                 if value != 'X':
                     vector.append('{0}:{1}'.format(metric, value))
         if output_prefix:
-            prefix = 'CVSS:3.{}/'.format(self.minor_version)
+            prefix = 'CVSS:3.{0}/'.format(self.minor_version)
         else:
             prefix = ''
         return prefix + '/'.join(vector)
