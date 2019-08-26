@@ -28,12 +28,12 @@ def color(text):
     return colored
 
 
-def ask_interactively(version=3, all_metrics=False, no_colors=False):
+def ask_interactively(version=3.1, all_metrics=False, no_colors=False):
     """
     Asks user to build CVSS vector string interactively.
 
     Args:
-        version (int): 2 or 3 for CVSS2 or CVSS3 respectively
+        version (float): 2 or 3.0/3.1 for CVSS2 or CVSS3 respectively
         all_metrics (bool): If true, temporal and environmental metrics are asked, else only base
                             metrics are asked for
         no_colors (bool): If true, terminal coloring is not used in interactive mode
@@ -45,7 +45,7 @@ def ask_interactively(version=3, all_metrics=False, no_colors=False):
     if version == 2:
         print('Interactive CVSS2 calculator')
         from .constants2 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUE_NAMES
-    elif version == 3:
+    elif version >= 3.0:
         print('Interactive CVSS3 calculator')
         from .constants3 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUE_NAMES
     else:
@@ -73,13 +73,13 @@ def ask_interactively(version=3, all_metrics=False, no_colors=False):
                 name_with_hints = name_with_hints.replace(letter, '(' + letter + ')')
 
             # Exceptions for hints
-            if version == 3 and name_with_hints == 'Not Defined':
+            if version >= 3.0 and name_with_hints == 'Not Defined':
                 name_with_hints = '(X)Not Defined'
-            if not version == 3 and name_with_hints == '(P)roof of (C)oncept':
+            if not version >= 3.0 and name_with_hints == '(P)roof of (C)oncept':
                 name_with_hints = '(P)roof (O)f (C)oncept'
-            if not version == 3 and name_with_hints == '(U)nconfirmed':
+            if not version >= 3.0 and name_with_hints == '(U)nconfirmed':
                 name_with_hints = '(U)n(C)onfirmed'
-            if not version == 3 and name_with_hints == '(U)ncorroborated':
+            if not version >= 3.0 and name_with_hints == '(U)ncorroborated':
                 name_with_hints = '(U)nco(R)roborated'
 
             value_names.append(name_with_hints)
@@ -106,8 +106,10 @@ def ask_interactively(version=3, all_metrics=False, no_colors=False):
                 break
         print()
 
-    if version == 3:
+    if version == 3.0:
         vector_string = 'CVSS:3.0/' + '/'.join(vector)
+    elif version == 3.1:
+        vector_string = 'CVSS:3.1/' + '/'.join(vector)
     else:
         vector_string = '/'.join(vector)
     return vector_string
