@@ -81,13 +81,6 @@ def ask_interactively(version=3.1, all_metrics=False, no_colors=False):
                     '(U)nconfirmed': '(U)n(C)onfirmed',
                     '(U)ncorroborated': '(U)nco(R)roborated',
                 }.get(name_with_hints, name_with_hints)
-                name_with_hints = '(X)Not Defined'
-            if not version >= 3.0 and name_with_hints == '(P)roof of (C)oncept':
-                name_with_hints = '(P)roof (O)f (C)oncept'
-            if not version >= 3.0 and name_with_hints == '(U)nconfirmed':
-                name_with_hints = '(U)n(C)onfirmed'
-            if not version >= 3.0 and name_with_hints == '(U)ncorroborated':
-                name_with_hints = '(U)nco(R)roborated'
 
             value_names.append(name_with_hints)
 
