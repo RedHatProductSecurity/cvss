@@ -77,3 +77,10 @@ Testing
 
 For extensive testing, the test vectors were generated using official
 JavaScript generators and `cvsslib <https://github.com/ctxis/cvsslib>`_.
+
+To run all tests use the following script on a system with both Python 2 and Python 3 installed:
+
+::
+
+    $ cd tests
+    $ bash run_tests.sh
