@@ -41,6 +41,13 @@ class TestCVSS3(unittest.TestCase):
         """
         self.run_tests_from_file('vectors_simple3')
 
+    def test_simple_31(self):
+        """
+        All vector combinations with only mandatory fields. Computed using
+         https://www.first.org/cvss/calculator/3.1 . 2,592 vectors.
+        """
+        self.run_tests_from_file('vectors_simple31')
+
     def test_calculator(self):
         """
         Hand picked vectors using https://www.first.org/cvss/calculator/3.0 . 2 vectors.
@@ -59,6 +66,13 @@ class TestCVSS3(unittest.TestCase):
         https://pypi.python.org/pypi/cvsslib . 100,000 vectors.
         """
         self.run_tests_from_file('vectors_random3')
+
+    def test_random_31(self):
+        """
+        Random generated test vectors, values computed using
+        https://www.first.org/cvss/calculator/3.1 . 100,000 vectors.
+        """
+        self.run_tests_from_file('vectors_random31')
 
     def test_clean_vector(self):
         """
@@ -159,6 +173,10 @@ class TestCVSS3(unittest.TestCase):
 
         # Missing prefix
         v = 'AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
+        self.assertRaises(CVSS3MalformedError, CVSS3, v)
+
+        # Unsupported version
+        v = 'CVSS:3.2/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L'
         self.assertRaises(CVSS3MalformedError, CVSS3, v)
 
         # Empty field

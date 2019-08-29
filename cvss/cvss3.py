@@ -74,6 +74,7 @@ class CVSS3(object):
                           are not mandatory may be missing
         """
         self.vector = vector
+        self.minor_version = None
         self.metrics = {}
         self.original_metrics = None
         self.missing_metrics = []
@@ -112,15 +113,19 @@ class CVSS3(object):
         if self.vector.endswith('/'):
             raise CVSS3MalformedError('Malformed CVSS3 vector, trailing "/"')
 
-        # Handle 'CVSS:3.0' in the beginning of vector and split vector
-        if self.vector.startswith('CVSS:3.0'):
-            try:
-                fields = self.vector.split('/')[1:]
-            except IndexError:
-                raise CVSS3MalformedError('Malformed CVSS3 vector "{0}"'.format(self.vector))
+        # Handle 'CVSS:3.x' in the beginning of vector and split vector
+        if self.vector.startswith('CVSS:3.0/'):
+            self.minor_version = 0
+        elif self.vector.startswith('CVSS:3.1/'):
+            self.minor_version = 1
         else:
-            raise CVSS3MalformedError('Malformed CVSS3 vector "{0}" is missing mandatory prefix'
-                                      .format(self.vector))
+            raise CVSS3MalformedError('Malformed CVSS3 vector "{0}" is missing mandatory prefix '
+                                      'or uses unsupported CVSS version'.format(self.vector))
+
+        try:
+            fields = self.vector.split('/')[1:]
+        except IndexError:
+            raise CVSS3MalformedError('Malformed CVSS3 vector "{0}"'.format(self.vector))
 
         # Parse fields
         for field in fields:
@@ -258,16 +263,33 @@ class CVSS3(object):
                                       ),
                                      D('0.915'))
 
-    def compute_modified_isc(self):
+    def compute_modified_isc_30(self):
         """
+        This is CVSS:3.0 version
+
         If Modified Scope Unchanged    6.42 x [ISCModified]
-        If Modified Scope Changed    7.52 x [ISCModified-0.029] - 3.25 x [ISCModified-0.02]^15
+        If Modified Scope Changed      7.52 x [ISCModified-0.029] - 3.25 x [ISCModified-0.02]^15
         """
         if self.modified_scope == 'U':
             self.modified_isc = D('6.42') * self.modified_isc_base
         else:  # Modified scope has always value, if not defined then matches Scope
             self.modified_isc = (D('7.52') * (self.modified_isc_base - D('0.029')) -
                                  D('3.25') * (self.modified_isc_base - D('0.02')) ** D('15'))
+
+    def compute_modified_isc(self):
+        """
+        This is CVSS:3.1 version
+
+        If Modified Scope Unchanged    6.42 x [ISCModified]
+        If Modified Scope Changed      7.52 x (ISCModified - 0.029) - 3.25 x
+                                       (ISCModified x 0.9731 - 0.02)^13
+        """
+        if self.modified_scope == 'U':
+            self.modified_isc = D('6.42') * self.modified_isc_base
+        else:  # Modified scope has always value, if not defined then matches Scope
+            self.modified_isc = (D('7.52') * (self.modified_isc_base - D('0.029')) -
+                                 D('3.25') * (self.modified_isc_base * D('0.9731') - D('0.02'))
+                                 ** D('13'))
 
     def compute_modified_esc(self):
         """
@@ -292,7 +314,10 @@ class CVSS3(object):
                           x Report Confidence))
         """
         self.compute_modified_isc_base()
-        self.compute_modified_isc()
+        if self.minor_version == 0:
+            self.compute_modified_isc_30()
+        else:
+            self.compute_modified_isc()
         self.compute_modified_esc()
 
         if self.modified_isc <= D('0.0'):
@@ -333,7 +358,7 @@ class CVSS3(object):
                 if value != 'X':
                     vector.append('{0}:{1}'.format(metric, value))
         if output_prefix:
-            prefix = 'CVSS:3.0/'
+            prefix = 'CVSS:3.{0}/'.format(self.minor_version)
         else:
             prefix = ''
         return prefix + '/'.join(vector)
