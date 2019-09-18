@@ -51,7 +51,7 @@ METRICS_VALUES = {'AV': {'L': D('0.395'), 'A': D('0.646'), 'N': D('1')},
                   'AR': {'L': D('0.5'), 'M': D('1'), 'H': D('1.51'), 'ND': D('1')},
                   }
 
-METRICS_VALUE_NAMES = OrderedDict([('AV', OrderedDict([('L', 'Local Access'),
+METRICS_VALUE_NAMES = OrderedDict([('AV', OrderedDict([('L', 'Local'),
                                                        ('A', 'Adjacent Network'),
                                                        ('N', 'Network')])),
                                    ('AC', OrderedDict([('H', 'High'),
