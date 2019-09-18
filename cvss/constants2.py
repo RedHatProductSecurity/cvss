@@ -53,7 +53,7 @@ METRICS_VALUES = {'AV': {'L': D('0.395'), 'A': D('0.646'), 'N': D('1')},
 
 METRICS_VALUE_NAMES = OrderedDict([('AV', OrderedDict([('L', 'Local Access'),
                                                        ('A', 'Adjacent Network'),
-                                                       ('N', 'Network Accessible')])),
+                                                       ('N', 'Network')])),
                                    ('AC', OrderedDict([('H', 'High'),
                                                        ('M', 'Medium'),
                                                        ('L', 'Low')])),
