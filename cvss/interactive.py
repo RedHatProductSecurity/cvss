@@ -77,7 +77,7 @@ def ask_interactively(version=3.1, all_metrics=False, no_colors=False):
                 name_with_hints = '(X)Not Defined'
             elif version < 3.0:
                 name_with_hints = {
-                    '(P)roof of (C)oncept': '(P)roof (O)f (C)oncept',
+                    '(P)roof-of-(C)oncept': '(P)roof-(O)f-(C)oncept',
                     '(U)nconfirmed': '(U)n(C)onfirmed',
                     '(U)ncorroborated': '(U)nco(R)roborated',
                 }.get(name_with_hints, name_with_hints)
