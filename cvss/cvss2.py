@@ -250,6 +250,25 @@ class CVSS2(object):
                 if value != 'ND':
                     vector.append('{0}:{1}'.format(metric, value))
         return '/'.join(vector)
+    
+    def severities(self):
+        """
+        Returns severities based on scores. https://nvd.nist.gov/vuln-metrics/cvss
+        
+        Returns:
+            (tuple): Base Severity, Temporal Severity, Environmental Severity as strings
+        """
+        severities = []
+        for score in (self.base_score, self.temporal_score, self.environmental_score):
+            if score is None:
+                severities.append('None')
+            elif score <= D('3.9'):
+                severities.append('Low')
+            elif score <= D('6.9'):
+                severities.append('Medium')
+            else:
+                severities.append('High')
+        return tuple(severities)
 
     def rh_vector(self):
         """

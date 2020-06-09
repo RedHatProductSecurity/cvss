@@ -77,6 +77,43 @@ class TestCVSS2(unittest.TestCase):
         self.assertEqual('AV:A/AC:H/Au:M/C:C/I:N/A:C/E:POC/RL:W/CDP:H/TD:N/IR:L/AR:M',
                          CVSS2(v).clean_vector())
 
+    def test_severities(self):
+        """
+        Tests for computing severities.
+        """
+        v = 'AV:L/AC:H/Au:M/C:N/I:N/A:N'
+        self.assertEqual(('Low', 'None', 'None'), CVSS2(v).severities(), v)
+
+        v = 'AV:L/AC:H/Au:M/C:P/I:N/A:N/E:U/RL:ND/RC:ND/CDP:N/TD:ND/CR:ND/IR:ND/AR:ND'
+        self.assertEqual(('Low', 'Low', 'Low'), CVSS2(v).severities(), v)
+
+        v = 'AV:L/AC:H/Au:M/C:P/I:N/A:N/E:U/RL:OF/RC:ND/CDP:N/TD:ND/CR:L/IR:ND/AR:ND'
+        self.assertEqual(('Low', 'Low', 'Low'), CVSS2(v).severities(), v)
+
+        v = 'AV:L/AC:H/Au:M/C:P/I:N/A:P/E:U/RL:OF/RC:UC/CDP:N/TD:N/CR:L/IR:L/AR:ND'
+        self.assertEqual(('Low', 'Low', 'Low'), CVSS2(v).severities(), v)
+
+        v = 'AV:A/AC:M/Au:M/C:P/I:P/A:P/E:F/RL:W/RC:C/CDP:N/TD:ND/CR:ND/IR:ND/AR:ND'
+        self.assertEqual(('Medium', 'Medium', 'Medium'), CVSS2(v).severities(), v)
+
+        v = 'AV:A/AC:M/Au:M/C:P/I:P/A:P/E:F/RL:U/RC:C/CDP:N/TD:N/CR:ND/IR:ND/AR:ND'
+        self.assertEqual(('Medium', 'Medium', 'Medium'), CVSS2(v).severities(), v)
+
+        v = 'AV:A/AC:M/Au:M/C:P/I:P/A:P/E:H/RL:U/RC:C/CDP:L/TD:L/CR:ND/IR:ND/AR:ND'
+        self.assertEqual(('Medium', 'Medium', 'Medium'), CVSS2(v).severities(), v)
+
+        v = 'AV:N/AC:L/Au:S/C:C/I:P/A:P/E:H/RL:U/RC:C/CDP:MH/TD:H/CR:ND/IR:ND/AR:ND'
+        self.assertEqual(('High', 'High', 'High'), CVSS2(v).severities(), v)
+
+        v = 'AV:N/AC:L/Au:S/C:C/I:P/A:P/E:H/RL:U/RC:C/CDP:MH/TD:H/CR:ND/IR:ND/AR:ND'
+        self.assertEqual(('High', 'High', 'High'), CVSS2(v).severities(), v)
+
+        v = 'AV:N/AC:L/Au:S/C:C/I:C/A:C/E:H/RL:U/RC:C/CDP:L/TD:M/CR:ND/IR:ND/AR:ND'
+        self.assertEqual(('High', 'High', 'Medium'), CVSS2(v).severities(), v)
+
+        v = 'AV:A/AC:M/Au:S/C:P/I:P/A:P/E:U/RL:OF/RC:ND'
+        self.assertEqual(('Medium', 'Low', 'None'), CVSS2(v).severities(), v)
+
     def test_exceptions(self):
         """
         Test for exceptions in CVSS vector parsing.
