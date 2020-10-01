@@ -97,10 +97,10 @@ class TestCVSS2(unittest.TestCase):
         self.assertEqual(('Medium', 'Medium', 'Medium'), CVSS2(v).severities(), v)
 
         v = 'AV:A/AC:M/Au:M/C:P/I:P/A:P/E:F/RL:U/RC:C/CDP:N/TD:N/CR:ND/IR:ND/AR:ND'
-        self.assertEqual(('Medium', 'Medium', 'Medium'), CVSS2(v).severities(), v)
+        self.assertEqual(('Medium', 'Medium', 'Low'), CVSS2(v).severities(), v)
 
         v = 'AV:A/AC:M/Au:M/C:P/I:P/A:P/E:H/RL:U/RC:C/CDP:L/TD:L/CR:ND/IR:ND/AR:ND'
-        self.assertEqual(('Medium', 'Medium', 'Medium'), CVSS2(v).severities(), v)
+        self.assertEqual(('Medium', 'Medium', 'Low'), CVSS2(v).severities(), v)
 
         v = 'AV:N/AC:L/Au:S/C:C/I:P/A:P/E:H/RL:U/RC:C/CDP:MH/TD:H/CR:ND/IR:ND/AR:ND'
         self.assertEqual(('High', 'High', 'High'), CVSS2(v).severities(), v)
