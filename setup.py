@@ -18,7 +18,7 @@ with codecs.open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='cvss',
-    version='2.1',
+    version='2.2',
     description='CVSS2/3 library with interactive calculator for Python 2 and Python 3',
     long_description=long_description,
     url='https://github.com/skontar/cvss',
@@ -39,7 +39,8 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
     keywords='security cvss score calculator',
     packages=find_packages(),
