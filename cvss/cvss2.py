@@ -13,7 +13,8 @@ from __future__ import unicode_literals
 
 from decimal import Decimal as D, ROUND_HALF_UP
 
-from .constants2 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUES
+from .constants2 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUES, \
+    METRICS_VALUE_NAMES
 from .exceptions import CVSS2MalformedError, CVSS2MandatoryError, CVSS2RHMalformedError, \
     CVSS2RHScoreDoesNotMatch
 
@@ -143,6 +144,14 @@ class CVSS2(object):
         result = METRICS_VALUES[abbreviation][string_value]
         return result
 
+    def get_value_description(self, abbreviation):
+        """
+        Gets textual description of specific metric specified by its abbreviation.
+        """
+        string_value = self.metrics.get(abbreviation, 'ND')
+        result = METRICS_VALUE_NAMES[abbreviation][string_value]
+        return result
+
     def impact_equation(self):
         """
         Impact = 10.41*(1-(1-ConfImpact)*(1-IntegImpact)*(1-AvailImpact))
@@ -250,11 +259,11 @@ class CVSS2(object):
                 if value != 'ND':
                     vector.append('{0}:{1}'.format(metric, value))
         return '/'.join(vector)
-    
+
     def severities(self):
         """
         Returns severities based on scores. https://nvd.nist.gov/vuln-metrics/cvss
-        
+
         Returns:
             (tuple): Base Severity, Temporal Severity, Environmental Severity as strings
         """
@@ -285,3 +294,51 @@ class CVSS2(object):
 
     def __hash__(self):
         return hash(self.clean_vector())
+
+    def as_json(self):
+        """
+        Returns a dictionary formatted with attribute names and values defined by the official
+        CVSS JSON schema:
+
+        https://www.first.org/cvss/cvss-v2.0.json?20170531
+
+        Serialize a CVSS2 instance to JSON with:
+
+        json.dumps(cvss2.as_json())
+
+        Returns:
+            (dict): JSON schema-compatible CVSS representation
+        """
+        def us(text):
+            # Uppercase and convert to snake case
+            return text.upper().replace('-', '_').replace(' ', '_')
+
+        data = {
+            # Meta
+            'version': '2.0',
+            # Vector
+            'vectorString': self.vector,
+            # Metrics
+            'accessVector': us(self.get_value_description('AV')),
+            'accessComplexity': us(self.get_value_description('AC')),
+            'authentication': us(self.get_value_description('Au')),
+            'confidentialityImpact': us(self.get_value_description('C')),
+            'integrityImpact': us(self.get_value_description('I')),
+            'availabilityImpact': us(self.get_value_description('A')),
+            'exploitability': us(self.get_value_description('E')),
+            'remediationLevel': us(self.get_value_description('RL')),
+            'reportConfidence': us(self.get_value_description('RC')),
+            'collateralDamagePotential': us(self.get_value_description('CDP')),
+            'targetDistribution': us(self.get_value_description('TD')),
+            'confidentialityRequirement': us(self.get_value_description('CR')),
+            'integrityRequirement': us(self.get_value_description('IR')),
+            'availabilityRequirement': us(self.get_value_description('AR')),
+            # Scores
+            'baseScore': float(self.base_score),
+        }
+        if self.temporal_score:
+            data['temporalScore'] = float(self.temporal_score)
+        if self.environmental_score:
+            data['environmentalScore'] = float(self.environmental_score)
+
+        return data
