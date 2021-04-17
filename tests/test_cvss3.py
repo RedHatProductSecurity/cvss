@@ -1,6 +1,7 @@
-from os import path
+import json
 import sys
 import unittest
+from os import path
 
 sys.path.insert(0, path.dirname(path.dirname(path.abspath(__file__))))
 
@@ -315,6 +316,27 @@ class TestCVSS3(unittest.TestCase):
         e = [CVSS3(v)]
         i = 'Title: {0}\nThis is an overview of {0} problem.\nLinks: {0}'.format(v)
         self.assertEqual(parser.parse_cvss_from_text(i), e)
+
+    def test_json_schema_repr(self):
+        try:
+            import jsonschema
+        except ImportError:
+            return
+        vectors_to_schema = {
+            'vectors_random3': 'schemas/cvss-v3.0.json',
+            'vectors_random31': 'schemas/cvss-v3.1.json',
+        }
+        for vectors_file_path, schema_file_path in vectors_to_schema.items():
+            with open(path.join(WD, vectors_file_path)) as f:
+                for line in f:
+                    vector, _ = line.split(' - ')
+                    cvss = CVSS3(vector)
+                    with open(path.join(WD, schema_file_path)) as schema_file:
+                        schema = json.load(schema_file)
+                    try:
+                        jsonschema.validate(instance=cvss.as_json(), schema=schema)
+                    except jsonschema.exceptions.ValidationError:
+                        self.fail('jsonschema validation failed on vector: {}'.format(vector))
 
 
 if __name__ == '__main__':

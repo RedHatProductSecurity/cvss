@@ -45,6 +45,7 @@ setup(
     keywords='security cvss score calculator',
     packages=find_packages(),
     install_requires=dependencies,
+    tests_require=['jsonschema'],
     entry_points={
         'console_scripts': [
             'cvss_calculator = cvss.cvss_calculator:main',
