@@ -295,7 +295,7 @@ class CVSS2(object):
     def __hash__(self):
         return hash(self.clean_vector())
 
-    def as_json(self):
+    def as_json(self, sort=False):
         """
         Returns a dictionary formatted with attribute names and values defined by the official
         CVSS JSON schema:
@@ -305,6 +305,10 @@ class CVSS2(object):
         Serialize a CVSS2 instance to JSON with:
 
         json.dumps(cvss2.as_json())
+
+        Or get sorted JSON with:
+
+        json.dumps(cvss2.as_json(sort=True))
 
         Returns:
             (dict): JSON schema-compatible CVSS representation
@@ -340,5 +344,7 @@ class CVSS2(object):
             data['temporalScore'] = float(self.temporal_score)
         if self.environmental_score:
             data['environmentalScore'] = float(self.environmental_score)
+        if sort:
+            data = {key: value for key, value in sorted(data.items())}
 
         return data
