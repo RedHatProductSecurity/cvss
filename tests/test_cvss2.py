@@ -245,6 +245,17 @@ class TestCVSS2(unittest.TestCase):
         i = 'Title: {0}\nThis is an overview of {0} problem.\nLinks: {0}'.format(v)
         self.assertEqual(parser.parse_cvss_from_text(i), e)
 
+    def test_json_ordering(self):
+        with open(path.join(WD, 'vectors_random2')) as f:
+            for line in f:
+                vector, _ = line.split(' - ')
+                cvss = CVSS2(vector).as_json(sort=True)
+                old_key = ''
+                for key in cvss:
+                    if key < old_key:
+                        self.fail('dict ordering was not preserved: key {} less than previous key {} for CVSS object {}'.format(key, old_key, cvss))
+                    old_key = key
+
     def test_json_schema_repr(self):
         try:
             import jsonschema
