@@ -15,7 +15,7 @@ import copy
 from decimal import Decimal as D, ROUND_CEILING
 
 from .constants3 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUES, \
-    METRICS_VALUE_NAMES
+    METRICS_VALUE_NAMES, OrderedDict
 from .exceptions import CVSS3MalformedError, CVSS3MandatoryError, CVSS3RHMalformedError, \
     CVSS3RHScoreDoesNotMatch
 
@@ -421,7 +421,7 @@ class CVSS3(object):
 
         json.dumps(cvss.as_json())
 
-        Or get sorted JSON with:
+        Or get sorted JSON in an OrderedDict with:
 
         json.dumps(cvss.as_json(sort=True))
 
@@ -474,7 +474,7 @@ class CVSS3(object):
             'environmentalSeverity': us(temporal_severity),
             'temporalSeverity': us(environmental_everity),
         }
-        
+
         if sort:
-            data = {key: value for key, value in sorted(data.items())}
+            data = OrderedDict(sorted(data.items()))
         return data

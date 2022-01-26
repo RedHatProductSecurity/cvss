@@ -14,7 +14,7 @@ from __future__ import unicode_literals
 from decimal import Decimal as D, ROUND_HALF_UP
 
 from .constants2 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUES, \
-    METRICS_VALUE_NAMES
+    METRICS_VALUE_NAMES, OrderedDict
 from .exceptions import CVSS2MalformedError, CVSS2MandatoryError, CVSS2RHMalformedError, \
     CVSS2RHScoreDoesNotMatch
 
@@ -306,7 +306,7 @@ class CVSS2(object):
 
         json.dumps(cvss2.as_json())
 
-        Or get sorted JSON with:
+        Or get sorted JSON in an OrderedDict with:
 
         json.dumps(cvss2.as_json(sort=True))
 
@@ -345,6 +345,6 @@ class CVSS2(object):
         if self.environmental_score:
             data['environmentalScore'] = float(self.environmental_score)
         if sort:
-            data = {key: value for key, value in sorted(data.items())}
+            data = OrderedDict(sorted(data.items()))
 
         return data
