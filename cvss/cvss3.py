@@ -15,7 +15,7 @@ import copy
 from decimal import Decimal as D, ROUND_CEILING
 
 from .constants3 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUES, \
-    METRICS_VALUE_NAMES
+    METRICS_VALUE_NAMES, OrderedDict
 from .exceptions import CVSS3MalformedError, CVSS3MandatoryError, CVSS3RHMalformedError, \
     CVSS3RHScoreDoesNotMatch
 
@@ -409,7 +409,7 @@ class CVSS3(object):
     def __hash__(self):
         return hash(self.clean_vector())
 
-    def as_json(self):
+    def as_json(self, sort=False):
         """
         Returns a dictionary formatted with attribute names and values defined by the official
         CVSS JSON schema:
@@ -420,6 +420,10 @@ class CVSS3(object):
         Serialize a `cvss` instance to JSON with:
 
         json.dumps(cvss.as_json())
+
+        Or get sorted JSON in an OrderedDict with:
+
+        json.dumps(cvss.as_json(sort=True))
 
         Returns:
             (dict): JSON schema-compatible CVSS representation
@@ -433,7 +437,7 @@ class CVSS3(object):
             return text.upper().replace('-', '_').replace(' ', '_')
 
         base_severity, temporal_severity, environmental_everity = self.severities()
-        return {
+        data = {
             # Meta
             'version': '3.' + str(self.minor_version),
             # Vector
@@ -470,3 +474,7 @@ class CVSS3(object):
             'environmentalSeverity': us(temporal_severity),
             'temporalSeverity': us(environmental_everity),
         }
+
+        if sort:
+            data = OrderedDict(sorted(data.items()))
+        return data
