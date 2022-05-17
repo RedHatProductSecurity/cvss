@@ -18,7 +18,7 @@ with codecs.open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='cvss',
-    version='2.3',
+    version='2.4',
     description='CVSS2/3 library with interactive calculator for Python 2 and Python 3',
     long_description=long_description,
     url='https://github.com/skontar/cvss',
