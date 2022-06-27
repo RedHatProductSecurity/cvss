@@ -436,7 +436,7 @@ class CVSS3(object):
             # Uppercase and convert to snake case
             return text.upper().replace('-', '_').replace(' ', '_')
 
-        base_severity, temporal_severity, environmental_everity = self.severities()
+        base_severity, temporal_severity, environmental_severity = self.severities()
         data = {
             # Meta
             'version': '3.' + str(self.minor_version),
@@ -471,7 +471,7 @@ class CVSS3(object):
             'temporalScore': float(self.temporal_score),
             # Severities
             'baseSeverity': us(base_severity),
-            'environmentalSeverity': us(environmental_everity),
+            'environmentalSeverity': us(environmental_severity),
             'temporalSeverity': us(temporal_severity),
         }
 
