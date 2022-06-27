@@ -471,8 +471,8 @@ class CVSS3(object):
             'temporalScore': float(self.temporal_score),
             # Severities
             'baseSeverity': us(base_severity),
-            'environmentalSeverity': us(temporal_severity),
-            'temporalSeverity': us(environmental_everity),
+            'environmentalSeverity': us(environmental_everity),
+            'temporalSeverity': us(temporal_severity),
         }
 
         if sort:
