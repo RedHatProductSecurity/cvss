@@ -354,6 +354,14 @@ class TestCVSS3(unittest.TestCase):
                     except jsonschema.exceptions.ValidationError:
                         self.fail('jsonschema validation failed on vector: {}'.format(vector))
 
+    def test_json_schema_severities(self):
+        v = 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L/E:P/CR:L/IR:L/AR:L/MAV:P'
+        json = CVSS3(v).as_json()
+
+        self.assertEqual(json['baseSeverity'], "HIGH")
+        self.assertEqual(json['temporalSeverity'], "MEDIUM")
+        self.assertEqual(json['environmentalSeverity'], "LOW")
+
 
 if __name__ == '__main__':
     unittest.main()
