@@ -17,6 +17,34 @@ except ImportError:
     from ordereddict import OrderedDict
 
 
+METRICS_ABBREVIATIONS_JSON = OrderedDict([('AV', 'attackVector'),
+                                     ('AC', 'attackComplexity'),
+                                     ('PR', 'privilegesRequired'),
+                                     ('UI', 'userInteraction'),
+                                     ('S', 'scope'),
+                                     ('C', 'confidentialityImpact'),
+                                     ('I', 'integrityImpact'),
+                                     ('A', 'availabilityImpact'),
+
+                                     ('E', 'exploitCodeMaturity'),
+                                     ('RL', 'remediationLevel'),
+                                     ('RC', 'reportConfidence'),
+                                     ('CR', 'confidentialityRequirement'),
+                                     ('IR', 'integrityRequirement'),
+                                     ('AR', 'availabilityRequirement'),
+                                     ('MAV', 'modifiedAttackVector'),
+                                     ('MAC', 'modifiedAttackComplexity'),
+                                     ('MPR', 'modifiedPrivilegesRequired'),
+                                     ('MUI', 'modifiedUserInteraction'),
+                                     ('MS', 'modifiedScope'),
+                                     ('MC', 'modifiedConfidentialityImpact'),
+                                     ('MI', 'modifiedIntegrityImpact'),
+                                     ('MA', 'modifiedAvailabilityImpact'),
+                                     ])
+
+TEMPORAL_METRICS = ['E', 'RL', 'RC']
+ENVIRONMENTAL_METRICS = ['CR','IR','AR','MAV', 'MAC', 'MPR', 'MUI', 'MC', 'MI', 'MA']
+
 METRICS_ABBREVIATIONS = OrderedDict([('AV', 'Attack Vector'),
                                      ('AC', 'Attack Complexity'),
                                      ('PR', 'Privileges Required'),
