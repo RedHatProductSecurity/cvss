@@ -362,6 +362,33 @@ class TestCVSS3(unittest.TestCase):
         self.assertEqual(json['temporalSeverity'], "MEDIUM")
         self.assertEqual(json['environmentalSeverity'], "LOW")
 
+    def test_json_schema_minimal_base_only(self):
+        v = 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L'
+        json = CVSS3(v).as_json(minimal=True)
+        # selectively test some values
+        self.assertEqual(json['baseSeverity'], "HIGH")
+        self.assertIn('attackVector', json)
+        self.assertNotIn('exploitCodeMaturity', json)
+        self.assertNotIn('modifiedAttackVector', json)
+
+    def test_json_schema_minimal_temporal_only(self):
+        v = 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L/E:H'
+        json = CVSS3(v).as_json(minimal=True)
+        # selectively test some values
+        self.assertEqual(json['baseSeverity'], "HIGH")
+        self.assertIn('attackVector', json)
+        self.assertIn('exploitCodeMaturity', json)
+        self.assertIn('temporalSeverity', json)
+        self.assertNotIn('modifiedAttackVector', json)
+
+    def test_json_schema_minimal_environmental_only(self):
+        v = 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L/CR:H'
+        json = CVSS3(v).as_json(minimal=True)
+        # selectively test some values
+        self.assertEqual(json['baseSeverity'], "HIGH")
+        self.assertIn('attackVector', json)
+        self.assertNotIn('exploitCodeMaturity', json)
+        self.assertIn('confidentialityRequirement', json)
 
 if __name__ == '__main__':
     unittest.main()
