@@ -14,8 +14,8 @@ from __future__ import unicode_literals
 import copy
 from decimal import Decimal as D, ROUND_CEILING
 
-from .constants3 import METRICS_ABBREVIATIONS, METRICS_ABBREVIATIONS_JSON, METRICS_MANDATORY, METRICS_VALUES, \
-    METRICS_VALUE_NAMES, OrderedDict, ENVIRONMENTAL_METRICS, TEMPORAL_METRICS
+from .constants3 import METRICS_ABBREVIATIONS, METRICS_ABBREVIATIONS_JSON, METRICS_MANDATORY,\
+    METRICS_VALUES, METRICS_VALUE_NAMES, ENVIRONMENTAL_METRICS, TEMPORAL_METRICS, OrderedDict
 from .exceptions import CVSS3MalformedError, CVSS3MandatoryError, CVSS3RHMalformedError, \
     CVSS3RHScoreDoesNotMatch
 
@@ -196,20 +196,6 @@ class CVSS3(object):
             result = METRICS_VALUES[abbreviation][string_value]
         return result
 
-    def is_environmental_used(self):
-        is_used = False
-        for metric in ENVIRONMENTAL_METRICS:
-            if metric in self.original_metrics:
-                is_used = True
-        return is_used
-
-    def is_temporal_used(self):
-        is_used = False
-        for metric in TEMPORAL_METRICS:
-            if metric in self.original_metrics:
-                is_used = True
-        return is_used
-        
     def get_value_description(self, abbreviation):
         """
         Gets textual description of specific metric specified by its abbreviation.
@@ -450,33 +436,33 @@ class CVSS3(object):
             # Uppercase and convert to snake case
             return text.upper().replace('-', '_').replace(' ', '_')
 
-        base_severity, temporal_severity, environmental_severity = self.severities()
-
-        data = {}
-        data['vector'] = self.vector
-        data['version'] = '3.' + str(self.minor_version)
-        data['baseScore'] =  float(self.base_score)
-
         def add_metric_to_data(metric):
             k = METRICS_ABBREVIATIONS_JSON[metric]
             data[k] = us(self.get_value_description(metric))
-        
-        # add Base Metrics to JSON
+
+        base_severity, temporal_severity, environmental_severity = self.severities()
+
+        data = {
+            'version': '3.' + str(self.minor_version),
+            'vectorString': self.vector,
+        }
+
         for metric in METRICS_MANDATORY:
             add_metric_to_data(metric)
+        data['baseScore'] = float(self.base_score)
         data['baseSeverity'] = us(base_severity)
 
-        if self.is_temporal_used() or not minimal:
+        if not minimal or any(metric in self.original_metrics for metric in TEMPORAL_METRICS):
             for metric in TEMPORAL_METRICS:
                 add_metric_to_data(metric)
             data['temporalScore'] = float(self.temporal_score)
             data['temporalSeverity'] = us(temporal_severity)
 
-        if self.is_environmental_used() or not minimal:
+        if not minimal or any(metric in self.original_metrics for metric in ENVIRONMENTAL_METRICS):
             for metric in ENVIRONMENTAL_METRICS:
                 add_metric_to_data(metric)
             data['environmentalScore'] = float(self.environmental_score)
-            data['environmentalSeverity'] = us(environmental_severity)                
+            data['environmentalSeverity'] = us(environmental_severity)
 
         if sort:
             data = OrderedDict(sorted(data.items()))
