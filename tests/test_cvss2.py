@@ -272,6 +272,31 @@ class TestCVSS2(unittest.TestCase):
                 except jsonschema.exceptions.ValidationError:
                     self.fail('jsonschema validation failed on vector: {}'.format(vector))
 
+    def test_json_schema_minimal_base_only(self):
+        v = 'AV:L/AC:H/Au:N/C:N/I:N/A:C'
+        json_data = CVSS2(v).as_json(minimal=True)
+        # Selectively test some values
+        self.assertIn('accessVector', json_data)
+        self.assertNotIn('exploitability', json_data)
+        self.assertNotIn('confidentialityRequirement', json_data)
+
+    def test_json_data_schema_minimal_temporal_only(self):
+        v = 'AV:L/AC:H/Au:N/C:N/I:N/A:C/E:H/RL:U/RC:C'
+        json_data = CVSS2(v).as_json(minimal=True)
+        # Selectively test some values
+        self.assertIn('accessVector', json_data)
+        self.assertIn('exploitability', json_data)
+        self.assertIn('reportConfidence', json_data)
+        self.assertNotIn('availabilityRequirement', json_data)
+
+    def test_json_data_schema_minimal_environmental_only(self):
+        v = 'AV:L/AC:H/Au:N/C:N/I:N/A:C/E:H/RL:U/RC:C/CDP:LM/TD:M/CR:H/IR:M/AR:L'
+        json_data = CVSS2(v).as_json(minimal=True)
+        # Selectively test some values
+        self.assertIn('accessVector', json_data)
+        self.assertNotIn('exploitCodeMaturity', json_data)
+        self.assertIn('confidentialityRequirement', json_data)
+
 
 if __name__ == '__main__':
     unittest.main()
