@@ -14,8 +14,8 @@ from __future__ import unicode_literals
 import copy
 from decimal import Decimal as D, ROUND_CEILING
 
-from .constants3 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUES, \
-    METRICS_VALUE_NAMES, OrderedDict
+from .constants3 import METRICS_ABBREVIATIONS, METRICS_ABBREVIATIONS_JSON, METRICS_MANDATORY,\
+    METRICS_VALUES, METRICS_VALUE_NAMES, ENVIRONMENTAL_METRICS, TEMPORAL_METRICS, OrderedDict
 from .exceptions import CVSS3MalformedError, CVSS3MandatoryError, CVSS3RHMalformedError, \
     CVSS3RHScoreDoesNotMatch
 
@@ -409,7 +409,7 @@ class CVSS3(object):
     def __hash__(self):
         return hash(self.clean_vector())
 
-    def as_json(self, sort=False):
+    def as_json(self, sort=False, minimal=False):
         """
         Returns a dictionary formatted with attribute names and values defined by the official
         CVSS JSON schema:
@@ -436,44 +436,33 @@ class CVSS3(object):
             # Uppercase and convert to snake case
             return text.upper().replace('-', '_').replace(' ', '_')
 
+        def add_metric_to_data(metric):
+            k = METRICS_ABBREVIATIONS_JSON[metric]
+            data[k] = us(self.get_value_description(metric))
+
         base_severity, temporal_severity, environmental_severity = self.severities()
+
         data = {
-            # Meta
             'version': '3.' + str(self.minor_version),
-            # Vector
             'vectorString': self.vector,
-            # Metrics
-            'attackVector': us(self.get_value_description('AV')),
-            'attackComplexity': us(self.get_value_description('AC')),
-            'privilegesRequired': us(self.get_value_description('PR')),
-            'userInteraction': us(self.get_value_description('UI')),
-            'scope': us(self.get_value_description('S')),
-            'confidentialityImpact': us(self.get_value_description('C')),
-            'integrityImpact': us(self.get_value_description('I')),
-            'availabilityImpact': us(self.get_value_description('A')),
-            'exploitCodeMaturity': us(self.get_value_description('E')),
-            'remediationLevel': us(self.get_value_description('RL')),
-            'reportConfidence': us(self.get_value_description('RC')),
-            'confidentialityRequirement': us(self.get_value_description('CR')),
-            'integrityRequirement': us(self.get_value_description('IR')),
-            'availabilityRequirement': us(self.get_value_description('AR')),
-            'modifiedAttackVector': us(self.get_value_description('MAV')),
-            'modifiedAttackComplexity': us(self.get_value_description('MAC')),
-            'modifiedPrivilegesRequired': us(self.get_value_description('MPR')),
-            'modifiedUserInteraction': us(self.get_value_description('MUI')),
-            'modifiedScope': us(self.get_value_description('MS')),
-            'modifiedConfidentialityImpact': us(self.get_value_description('MC')),
-            'modifiedIntegrityImpact': us(self.get_value_description('MI')),
-            'modifiedAvailabilityImpact': us(self.get_value_description('MA')),
-            # Scores
-            'baseScore': float(self.base_score),
-            'environmentalScore': float(self.environmental_score),
-            'temporalScore': float(self.temporal_score),
-            # Severities
-            'baseSeverity': us(base_severity),
-            'environmentalSeverity': us(environmental_severity),
-            'temporalSeverity': us(temporal_severity),
         }
+
+        for metric in METRICS_MANDATORY:
+            add_metric_to_data(metric)
+        data['baseScore'] = float(self.base_score)
+        data['baseSeverity'] = us(base_severity)
+
+        if not minimal or any(metric in self.original_metrics for metric in TEMPORAL_METRICS):
+            for metric in TEMPORAL_METRICS:
+                add_metric_to_data(metric)
+            data['temporalScore'] = float(self.temporal_score)
+            data['temporalSeverity'] = us(temporal_severity)
+
+        if not minimal or any(metric in self.original_metrics for metric in ENVIRONMENTAL_METRICS):
+            for metric in ENVIRONMENTAL_METRICS:
+                add_metric_to_data(metric)
+            data['environmentalScore'] = float(self.environmental_score)
+            data['environmentalSeverity'] = us(environmental_severity)
 
         if sort:
             data = OrderedDict(sorted(data.items()))

@@ -33,7 +33,25 @@ METRICS_ABBREVIATIONS = OrderedDict([('AV', 'Access Vector'),
                                      ('AR', 'Availability Requirement'),
                                      ])
 
+METRICS_ABBREVIATIONS_JSON = OrderedDict([('AV', 'accessVector'),
+                                          ('AC', 'accessComplexity'),
+                                          ('Au', 'authentication'),
+                                          ('C', 'confidentialityImpact'),
+                                          ('I', 'integrityImpact'),
+                                          ('A', 'availabilityImpact'),
+                                          ('E', 'exploitability'),
+                                          ('RL', 'remediationLevel'),
+                                          ('RC', 'reportConfidence'),
+                                          ('CDP', 'collateralDamagePotential'),
+                                          ('TD', 'targetDistribution'),
+                                          ('CR', 'confidentialityRequirement'),
+                                          ('IR', 'integrityRequirement'),
+                                          ('AR', 'availabilityRequirement'),
+                                          ])
+
 METRICS_MANDATORY = ['AV', 'AC', 'Au', 'C', 'I', 'A']
+TEMPORAL_METRICS = ['E', 'RL', 'RC']
+ENVIRONMENTAL_METRICS = ['CDP', 'TD', 'CR', 'IR', 'AR']
 
 METRICS_VALUES = {'AV': {'L': D('0.395'), 'A': D('0.646'), 'N': D('1')},
                   'AC': {'H': D('0.35'), 'M': D('0.61'), 'L': D('0.71')},

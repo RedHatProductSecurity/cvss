@@ -356,11 +356,39 @@ class TestCVSS3(unittest.TestCase):
 
     def test_json_schema_severities(self):
         v = 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L/E:P/CR:L/IR:L/AR:L/MAV:P'
-        json = CVSS3(v).as_json()
+        json_data = CVSS3(v).as_json()
 
-        self.assertEqual(json['baseSeverity'], "HIGH")
-        self.assertEqual(json['temporalSeverity'], "MEDIUM")
-        self.assertEqual(json['environmentalSeverity'], "LOW")
+        self.assertEqual(json_data['baseSeverity'], "HIGH")
+        self.assertEqual(json_data['temporalSeverity'], "MEDIUM")
+        self.assertEqual(json_data['environmentalSeverity'], "LOW")
+
+    def test_json_schema_minimal_base_only(self):
+        v = 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L'
+        json_data = CVSS3(v).as_json(minimal=True)
+        # Selectively test some values
+        self.assertEqual(json_data['baseSeverity'], "HIGH")
+        self.assertIn('attackVector', json_data)
+        self.assertNotIn('exploitCodeMaturity', json_data)
+        self.assertNotIn('modifiedAttackVector', json_data)
+
+    def test_json_schema_minimal_temporal_only(self):
+        v = 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L/E:H'
+        json_data = CVSS3(v).as_json(minimal=True)
+        # Selectively test some values
+        self.assertEqual(json_data['baseSeverity'], "HIGH")
+        self.assertIn('attackVector', json_data)
+        self.assertIn('exploitCodeMaturity', json_data)
+        self.assertIn('temporalSeverity', json_data)
+        self.assertNotIn('modifiedAttackVector', json_data)
+
+    def test_json_schema_minimal_environmental_only(self):
+        v = 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L/CR:H'
+        json_data = CVSS3(v).as_json(minimal=True)
+        # Selectively test some values
+        self.assertEqual(json_data['baseSeverity'], "HIGH")
+        self.assertIn('attackVector', json_data)
+        self.assertNotIn('exploitCodeMaturity', json_data)
+        self.assertIn('confidentialityRequirement', json_data)
 
 
 if __name__ == '__main__':

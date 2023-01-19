@@ -41,7 +41,34 @@ METRICS_ABBREVIATIONS = OrderedDict([('AV', 'Attack Vector'),
                                      ('MA', 'Modified Availability'),
                                      ])
 
+# Metric names as they appear in the CVSS JSON schema (see CVSS3.as_json())
+METRICS_ABBREVIATIONS_JSON = OrderedDict([('AV', 'attackVector'),
+                                          ('AC', 'attackComplexity'),
+                                          ('PR', 'privilegesRequired'),
+                                          ('UI', 'userInteraction'),
+                                          ('S', 'scope'),
+                                          ('C', 'confidentialityImpact'),
+                                          ('I', 'integrityImpact'),
+                                          ('A', 'availabilityImpact'),
+                                          ('E', 'exploitCodeMaturity'),
+                                          ('RL', 'remediationLevel'),
+                                          ('RC', 'reportConfidence'),
+                                          ('CR', 'confidentialityRequirement'),
+                                          ('IR', 'integrityRequirement'),
+                                          ('AR', 'availabilityRequirement'),
+                                          ('MAV', 'modifiedAttackVector'),
+                                          ('MAC', 'modifiedAttackComplexity'),
+                                          ('MPR', 'modifiedPrivilegesRequired'),
+                                          ('MUI', 'modifiedUserInteraction'),
+                                          ('MS', 'modifiedScope'),
+                                          ('MC', 'modifiedConfidentialityImpact'),
+                                          ('MI', 'modifiedIntegrityImpact'),
+                                          ('MA', 'modifiedAvailabilityImpact'),
+                                          ])
+
 METRICS_MANDATORY = ['AV', 'AC', 'PR', 'UI', 'S', 'C', 'I', 'A']
+TEMPORAL_METRICS = ['E', 'RL', 'RC']
+ENVIRONMENTAL_METRICS = ['CR','IR','AR','MAV', 'MAC', 'MPR', 'MUI', 'MC', 'MI', 'MA']
 
 METRICS_VALUES = {'AV': {'N': D('0.85'), 'A': D('0.62'), 'L': D('0.55'), 'P': D('0.2')},
                   'AC': {'L': D('0.77'), 'H': D('0.44')},
