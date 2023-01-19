@@ -261,12 +261,12 @@ class TestCVSS2(unittest.TestCase):
             import jsonschema
         except ImportError:
             return
+        with open(path.join(WD, 'schemas/cvss-v2.0.json')) as schema_file:
+            schema = json.load(schema_file)
         with open(path.join(WD, 'vectors_random2')) as f:
             for line in f:
                 vector, _ = line.split(' - ')
                 cvss = CVSS2(vector)
-                with open(path.join(WD, 'schemas/cvss-v2.0.json')) as schema_file:
-                    schema = json.load(schema_file)
                 try:
                     jsonschema.validate(instance=cvss.as_json(), schema=schema)
                 except jsonschema.exceptions.ValidationError:

@@ -343,12 +343,12 @@ class TestCVSS3(unittest.TestCase):
             'vectors_random31': 'schemas/cvss-v3.1.json',
         }
         for vectors_file_path, schema_file_path in vectors_to_schema.items():
+            with open(path.join(WD, schema_file_path)) as schema_file:
+                schema = json.load(schema_file)
             with open(path.join(WD, vectors_file_path)) as f:
                 for line in f:
                     vector, _ = line.split(' - ')
                     cvss = CVSS3(vector)
-                    with open(path.join(WD, schema_file_path)) as schema_file:
-                        schema = json.load(schema_file)
                     try:
                         jsonschema.validate(instance=cvss.as_json(), schema=schema)
                     except jsonschema.exceptions.ValidationError:
