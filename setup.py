@@ -16,12 +16,27 @@ here = path.abspath(path.dirname(__file__))
 with codecs.open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
+with open("cvss/__init__.py") as f:
+    for line in f:
+        if line.startswith("__version__"):
+            delim = '"' if '"' in line else "'"
+            version = line.split(delim)[1]
+            break
+    else:
+        raise RuntimeError("Unable to find version string.")
+
 setup(
     name='cvss',
-    version='2.5',
+    version=version,
     description='CVSS2/3 library with interactive calculator for Python 2 and Python 3',
     long_description=long_description,
-    url='https://github.com/skontar/cvss',
+    url='https://github.com/RedHatProductSecurity/cvss',
+    project_urls={
+        "Releases": "https://github.com/RedHatProductSecurity/cvss/releases",
+        "Source code": "https://github.com/RedHatProductSecurity/cvss",
+        "Issues": "https://github.com/RedHatProductSecurity/cvss/issues",
+        "CI": "https://github.com/RedHatProductSecurity/cvss/actions",
+    },
     author='Stanislav Kontar, Red Hat Product Security',
     author_email='skontar@redhat.com',
     license='LGPLv3+',
@@ -31,16 +46,14 @@ setup(
         'Topic :: Security',
         'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
     ],
     keywords='security cvss score calculator',
     packages=find_packages(),

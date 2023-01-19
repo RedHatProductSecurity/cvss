@@ -7,19 +7,15 @@ on:
   pull_request:
 
 jobs:
-  test:
-    name: Run tests
-    runs-on: ubuntu-latest
-
+  tox:
+    name: Run Tox
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }} testing env
-      uses: actions/setup-python@v2
+    - name: Run all envs
+      uses: fedora-python/tox-github-action@master
       with:
-        python-version: ${{ matrix.python-version }}
-    - name: Test
-      run: pip install jsonschema && cd tests && bash run_tests.sh
-
+        tox_env: ${{ matrix.tox_env }}
     strategy:
       matrix:
-        python-version: [2.7, 3.6, 3.7, 3.8, 3.9]
+        tox_env: [py27, py36, py37, py38, py39, py310, py311]
+    runs-on: ubuntu-latest
