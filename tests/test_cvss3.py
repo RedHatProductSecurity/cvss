@@ -5,14 +5,14 @@ from os import path
 
 sys.path.insert(0, path.dirname(path.dirname(path.abspath(__file__))))
 
-from cvss.cvss3 import CVSS3
-from cvss.cvss2 import CVSS2
 from cvss import parser
+from cvss.cvss2 import CVSS2
+from cvss.cvss3 import CVSS3
 from cvss.exceptions import (
     CVSS3MalformedError,
     CVSS3MandatoryError,
-    CVSS3RHScoreDoesNotMatch,
     CVSS3RHMalformedError,
+    CVSS3RHScoreDoesNotMatch,
 )
 
 WD = path.dirname(path.abspath(sys.argv[0]))  # Manage to run script anywhere in the path

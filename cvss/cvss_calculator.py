@@ -13,7 +13,6 @@ import argparse
 
 from cvss import CVSSError, ask_interactively
 
-
 PAD = 24  # string padding for score names
 
 

@@ -3,9 +3,9 @@ This is a simple test against cvsslib from https://pypi.python.org/pypi/cvsslib 
 Runs only with Python 3 because cvsslib does not support Python 2.
 """
 
-import cvss
 import cvsslib
 
+import cvss
 
 vector_string = "AV:L/AC:M/Au:N/C:N/I:N/A:N/E:F/RL:W/RC:C/TD:L/CR:H/IR:ND"
 result = cvss.CVSS2(vector_string).scores()

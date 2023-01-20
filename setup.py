@@ -1,8 +1,7 @@
 import codecs
 from os import path
 
-from setuptools import setup, find_packages
-
+from setuptools import find_packages, setup
 
 try:
     from collections import OrderedDict

@@ -4,8 +4,7 @@
 
 from .cvss2 import CVSS2
 from .cvss3 import CVSS3
-from .exceptions import CVSSError, CVSS2Error, CVSS3Error
+from .exceptions import CVSS2Error, CVSS3Error, CVSSError
 from .interactive import ask_interactively
-
 
 __version__ = "2.5"

@@ -11,16 +11,17 @@ The library is compatible with both Python 2 and Python 3.
 
 from __future__ import unicode_literals
 
-from decimal import Decimal as D, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP
+from decimal import Decimal as D
 
 from .constants2 import (
+    ENVIRONMENTAL_METRICS,
     METRICS_ABBREVIATIONS,
     METRICS_ABBREVIATIONS_JSON,
     METRICS_MANDATORY,
-    METRICS_VALUES,
     METRICS_VALUE_NAMES,
+    METRICS_VALUES,
     TEMPORAL_METRICS,
-    ENVIRONMENTAL_METRICS,
     OrderedDict,
 )
 from .exceptions import (

@@ -11,9 +11,7 @@ from itertools import product
 from random import choice
 
 import cvsslib
-
-from generate_constants import build_constants, METRICS, NAMES, VALUES
-
+from generate_constants import METRICS, NAMES, VALUES, build_constants
 
 NR_OF_VECTORS = 100000
 

@@ -6,7 +6,6 @@ from __future__ import print_function, unicode_literals
 
 from cvss import CVSS2, CVSS3
 
-
 vector = "AV:L/AC:L/Au:M/C:N/I:P/A:C/E:U/RL:W/RC:ND/CDP:L/TD:H/CR:ND/IR:ND/AR:M"
 c = CVSS2(vector)
 print(vector)

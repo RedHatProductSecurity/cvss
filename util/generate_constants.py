@@ -7,11 +7,10 @@ https://www.first.org/cvss/specification-document
 
 from __future__ import print_function, unicode_literals
 
-from collections import OrderedDict
 import copy
-from decimal import Decimal
 import re
-
+from collections import OrderedDict
+from decimal import Decimal
 
 METRICS_2 = """
 Base                Access Vector, AV                    [L,A,N]                Yes

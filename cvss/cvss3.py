@@ -12,15 +12,16 @@ The library is compatible with both Python 2 and Python 3.
 from __future__ import unicode_literals
 
 import copy
-from decimal import Decimal as D, ROUND_CEILING
+from decimal import ROUND_CEILING
+from decimal import Decimal as D
 
 from .constants3 import (
+    ENVIRONMENTAL_METRICS,
     METRICS_ABBREVIATIONS,
     METRICS_ABBREVIATIONS_JSON,
     METRICS_MANDATORY,
-    METRICS_VALUES,
     METRICS_VALUE_NAMES,
-    ENVIRONMENTAL_METRICS,
+    METRICS_VALUES,
     TEMPORAL_METRICS,
     OrderedDict,
 )

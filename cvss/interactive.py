@@ -10,7 +10,6 @@ Compatible with both Python 2 and Python 3.
 
 from __future__ import print_function, unicode_literals
 
-
 try:
     # noinspection PyUnresolvedReferences
     string_input = raw_input
@@ -44,10 +43,18 @@ def ask_interactively(version=3.1, all_metrics=False, no_colors=False):
     # Import correct constants
     if version == 2:
         print("Interactive CVSS2 calculator")
-        from .constants2 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUE_NAMES
+        from .constants2 import (
+            METRICS_ABBREVIATIONS,
+            METRICS_MANDATORY,
+            METRICS_VALUE_NAMES,
+        )
     elif version >= 3.0:
         print("Interactive CVSS3 calculator")
-        from .constants3 import METRICS_ABBREVIATIONS, METRICS_MANDATORY, METRICS_VALUE_NAMES
+        from .constants3 import (
+            METRICS_ABBREVIATIONS,
+            METRICS_MANDATORY,
+            METRICS_VALUE_NAMES,
+        )
     else:
         raise ValueError("Unknown version: {0}".format(version))
     print()
