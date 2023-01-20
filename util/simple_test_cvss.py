@@ -25,7 +25,10 @@ print(result)
 
 print()
 
-vector_string = "AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:P/RL:W/CR:X/IR:M/AR:H/MAV:N/MAC:H/MPR:L/MUI:N/MS:X/MC:N/MI:N/MA:X"
+vector_string = (
+    "AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/"
+    "E:P/RL:W/CR:X/IR:M/AR:H/MAV:N/MAC:H/MPR:L/MUI:N/MS:X/MC:N/MI:N/MA:X"
+)
 result = cvss.CVSS3(vector_string).scores()
 expected = cvsslib.vector.calculate_vector(vector_string, module=cvsslib.cvss3)
 print("CVSS3")

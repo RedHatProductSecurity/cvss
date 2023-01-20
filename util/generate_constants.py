@@ -156,17 +156,17 @@ def build_constants(metrics, names, values):
 
     # Parse name, abbreviation, and mandatory
     for line in metrics.strip().split("\n"):
-        r = re.search(".*[ ]{3,}(.*), (\S+)\s+\[(\S+)\]\s+(\S+)", line)
+        r = re.search(r".* {3,}(.*), (\S+)\s+\[(\S+)\]\s+(\S+)", line)
         if r:
             metrics_abbreviations[r.group(2)] = r.group(1)
             if r.group(4) == "Yes":
                 metrics_mandatory.append(r.group(2))
         else:
-            raise RuntimeError('Malformated constant line "{0}"'.format(line))
+            raise RuntimeError('Malformed constant line "{0}"'.format(line))
 
     # Parse name and value numbers for abbreviated values
     for line in values.strip().split("\n"):
-        r = re.search("(\S+)\s+\[(.*)\]", line)
+        r = re.search(r"(\S+)\s+\[(.*)\]", line)
         if r:
             values = OrderedDict()
             for one_value in r.group(2).split(","):
@@ -177,12 +177,12 @@ def build_constants(metrics, names, values):
                     values[one_value] = None
             metrics_values[r.group(1)] = values
         else:
-            raise RuntimeError('Malformated constant line "{0}"'.format(line))
+            raise RuntimeError('Malformed constant line "{0}"'.format(line))
 
     # Parse full names for abbreviated values
     metrics_value_names = copy.deepcopy(metrics_values)
     for line in names.strip().split("\n"):
-        r = re.search("(\S+)\s+\[(.*)\]", line)
+        r = re.search(r"(\S+)\s+\[(.*)\]", line)
         if r:
             metric = r.group(1)
             names = r.group(2).split(",")

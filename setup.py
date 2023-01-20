@@ -4,7 +4,7 @@ from os import path
 from setuptools import find_packages, setup
 
 try:
-    from collections import OrderedDict
+    from collections import OrderedDict  # noqa
 except ImportError:
     dependencies = ["ordereddict"]
 else:

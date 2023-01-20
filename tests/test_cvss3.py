@@ -1,4 +1,5 @@
 import json
+import random
 import sys
 import unittest
 from os import path
@@ -85,7 +86,10 @@ class TestCVSS3(unittest.TestCase):
         """
         Tests for cleaning-up vector, where fields are not in order or some fields have X values.
         """
-        v = "CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X"
+        v = (
+            "CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/"
+            "E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X"
+        )
         self.assertEqual(
             "CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L",
             CVSS3(v).clean_vector(),
@@ -140,7 +144,10 @@ class TestCVSS3(unittest.TestCase):
         v = "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:N/A:H"
         self.assertEqual(("Critical", "Critical", "Critical"), CVSS3(v).severities(), v)
 
-        v = "CVSS:3.0/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/E:P/RL:W/IR:M/AR:H/MAV:N/MAC:H/MPR:L/MUI:N/MC:N/MI:N"
+        v = (
+            "CVSS:3.0/AV:L/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H/"
+            "E:P/RL:W/IR:M/AR:H/MAV:N/MAC:H/MPR:L/MUI:N/MC:N/MI:N"
+        )
         self.assertEqual(("High", "High", "Medium"), CVSS3(v).severities(), v)
 
         v = "CVSS:3.0/AV:P/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N/E:H/RC:U/CR:M/MAV:P/MAC:L/MUI:R/MC:N/MI:N"
@@ -257,7 +264,10 @@ class TestCVSS3(unittest.TestCase):
         e = []
         self.assertEqual(parser.parse_cvss_from_text(i), e)
 
-        i = "CVSS:3.0/AV:L/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N/MAV:A/MAC:L/MPR:N/MUI:N/MS:U/MC:N/MI:N/MA:N"
+        i = (
+            "CVSS:3.0/AV:L/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N/"
+            "MAV:A/MAC:L/MPR:N/MUI:N/MS:U/MC:N/MI:N/MA:N"
+        )
         e = [CVSS3(i)]
         self.assertEqual(parser.parse_cvss_from_text(i), e)
 
@@ -343,9 +353,8 @@ class TestCVSS3(unittest.TestCase):
                     for key in cvss:
                         if key < old_key:
                             self.fail(
-                                "dict ordering was not preserved: key {} less than previous key {} for CVSS object {}".format(
-                                    key, old_key, cvss
-                                )
+                                "dict ordering was not preserved: key {} less than previous key {} "
+                                "for CVSS object {}".format(key, old_key, cvss)
                             )
                         old_key = key
 
@@ -361,14 +370,19 @@ class TestCVSS3(unittest.TestCase):
         for vectors_file_path, schema_file_path in vectors_to_schema.items():
             with open(path.join(WD, schema_file_path)) as schema_file:
                 schema = json.load(schema_file)
+
+            vectors = []
             with open(path.join(WD, vectors_file_path)) as f:
                 for line in f:
-                    vector, _ = line.split(" - ")
-                    cvss = CVSS3(vector)
-                    try:
-                        jsonschema.validate(instance=cvss.as_json(), schema=schema)
-                    except jsonschema.exceptions.ValidationError:
-                        self.fail("jsonschema validation failed on vector: {}".format(vector))
+                    vectors.append(line.split(" - ")[0])
+
+            # Pick 500 random vectors; verifying all 100k is very slow.
+            for vector in random.sample(vectors, k=500):
+                cvss = CVSS3(vector)
+                try:
+                    jsonschema.validate(instance=cvss.as_json(), schema=schema)
+                except jsonschema.exceptions.ValidationError:
+                    self.fail("jsonschema validation failed on vector: {}".format(vector))
 
     def test_json_schema_severities(self):
         v = "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L/E:P/CR:L/IR:L/AR:L/MAV:P"

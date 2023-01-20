@@ -1,4 +1,5 @@
 import json
+import random
 import sys
 import unittest
 from os import path
@@ -263,9 +264,8 @@ class TestCVSS2(unittest.TestCase):
                 for key in cvss:
                     if key < old_key:
                         self.fail(
-                            "dict ordering was not preserved: key {} less than previous key {} for CVSS object {}".format(
-                                key, old_key, cvss
-                            )
+                            "dict ordering was not preserved: key {} less than previous key {} "
+                            "for CVSS object {}".format(key, old_key, cvss)
                         )
                     old_key = key
 
@@ -276,14 +276,19 @@ class TestCVSS2(unittest.TestCase):
             return
         with open(path.join(WD, "schemas/cvss-v2.0.json")) as schema_file:
             schema = json.load(schema_file)
+
+        vectors = []
         with open(path.join(WD, "vectors_random2")) as f:
             for line in f:
-                vector, _ = line.split(" - ")
-                cvss = CVSS2(vector)
-                try:
-                    jsonschema.validate(instance=cvss.as_json(), schema=schema)
-                except jsonschema.exceptions.ValidationError:
-                    self.fail("jsonschema validation failed on vector: {}".format(vector))
+                vectors.append(line.split(" - ")[0])
+
+        # Pick 500 random vectors; verifying all 100k is very slow.
+        for vector in random.sample(vectors, k=500):
+            cvss = CVSS2(vector)
+            try:
+                jsonschema.validate(instance=cvss.as_json(), schema=schema)
+            except jsonschema.exceptions.ValidationError:
+                self.fail("jsonschema validation failed on vector: {}".format(vector))
 
     def test_json_schema_minimal_base_only(self):
         v = "AV:L/AC:H/Au:N/C:N/I:N/A:C"
