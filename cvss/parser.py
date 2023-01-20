@@ -20,12 +20,12 @@ def parse_cvss_from_text(text):
     # Looks for substrings which resemble CVSS2 or CVSS3 vectors.
     # CVSS3 vector starts with 'CVSS:3.x/' prefix - matched by non-capturing group.
     # Minimum vector length is 26.
-    matches = re.compile(r'(?:CVSS:3\.\d/)?[A-Za-z:/]{26,}').findall(text)
+    matches = re.compile(r"(?:CVSS:3\.\d/)?[A-Za-z:/]{26,}").findall(text)
 
     cvsss = set()
     for match in matches:
         try:
-            if match.startswith('CVSS:3.'):
+            if match.startswith("CVSS:3."):
                 cvss = CVSS3(match)
             else:
                 cvss = CVSS2(match)

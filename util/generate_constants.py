@@ -13,7 +13,7 @@ from decimal import Decimal
 import re
 
 
-METRICS_2 = '''
+METRICS_2 = """
 Base                Access Vector, AV                    [L,A,N]                Yes
                     Access Complexity, AC                [H,M,L]                Yes
                     Authentication, Au                   [M,S,N]                Yes
@@ -28,9 +28,9 @@ Environmental       Collateral Damage Potential, CDP     [N,L,LM,MH,H,ND]       
                     Confidentiality Requirement, CR      [L,M,H,ND]             No
                     Integrity Requirement, IR            [L,M,H,ND]             No
                     Availability Requirement, AR         [L,M,H,ND]             No
-'''
+"""
 
-NAMES_2 = '''
+NAMES_2 = """
 AV                  [Local Access,Adjacent Network,Network Accessible]
 AC                  [High,Medium,Low]
 Au                  [Multiple,Single,None]
@@ -45,9 +45,9 @@ TD                  [None,Low,Medium,High,Not Defined]
 CR                  [Low,Medium,High,Not Defined]
 IR                  [Low,Medium,High,Not Defined]
 AR                  [Low,Medium,High,Not Defined]
-'''
+"""
 
-VALUES_2 = '''
+VALUES_2 = """
 AV                  [L=0.395,A=0.646,N=1]
 AC                  [H=0.35,M=0.61,L=0.71]
 Au                  [M=0.45,S=0.56,N=0.704]
@@ -62,9 +62,9 @@ TD                  [N=0,L=0.25,M=0.75,H=1,ND=1]
 CR                  [L=0.5,M=1,H=1.51,ND=1]
 IR                  [L=0.5,M=1,H=1.51,ND=1]
 AR                  [L=0.5,M=1,H=1.51,ND=1]
-'''
+"""
 
-METRICS_3 = '''
+METRICS_3 = """
 Base                Attack Vector, AV                    [N,A,L,P]            Yes
                     Attack Complexity, AC                [L,H]                Yes
                     Privileges Required, PR              [N,L,H]              Yes
@@ -87,9 +87,9 @@ Environmental       Confidentiality Req., CR             [X,H,M,L]            No
                     Modified Confidentiality, MC         [X,N,L,H]            No
                     Modified Integrity, MI               [X,N,L,H]            No
                     Modified Availability, MA            [X,N,L,H]            No
-'''
+"""
 
-NAMES_3 = '''
+NAMES_3 = """
 AV                  [Network,Adjacent,Local,Physical]
 AC                  [Low,High]
 PR                  [None,Low,High]
@@ -112,9 +112,9 @@ MS                  [Not Defined,Changed,Unchanged]
 MC                  [Not Defined,High,Low,None]
 MI                  [Not Defined,High,Low,None]
 MA                  [Not Defined,High,Low,None]
-'''
+"""
 
-VALUES_3 = '''
+VALUES_3 = """
 AV                  [N=0.85,A=0.62,L=0.55,P=0.2]
 AC                  [L=0.77,H=0.44]
 PR                  [N=0.85,L=0.62,H=0.27]             (or 0.85, 0.68, 0.50 if Scope = C)
@@ -137,7 +137,7 @@ MS                  [X,C,U]
 MC                  [X,H=0.56,L=0.22,N=0]
 MI                  [X,H=0.56,L=0.22,N=0]
 MA                  [X,H=0.56,L=0.22,N=0]
-'''
+"""
 
 METRICS = (METRICS_2, METRICS_3)
 NAMES = (NAMES_2, NAMES_3)
@@ -156,23 +156,23 @@ def build_constants(metrics, names, values):
     metrics_values = OrderedDict()
 
     # Parse name, abbreviation, and mandatory
-    for line in metrics.strip().split('\n'):
-        r = re.search('.*[ ]{3,}(.*), (\S+)\s+\[(\S+)\]\s+(\S+)', line)
+    for line in metrics.strip().split("\n"):
+        r = re.search(".*[ ]{3,}(.*), (\S+)\s+\[(\S+)\]\s+(\S+)", line)
         if r:
             metrics_abbreviations[r.group(2)] = r.group(1)
-            if r.group(4) == 'Yes':
+            if r.group(4) == "Yes":
                 metrics_mandatory.append(r.group(2))
         else:
             raise RuntimeError('Malformated constant line "{0}"'.format(line))
 
     # Parse name and value numbers for abbreviated values
-    for line in values.strip().split('\n'):
-        r = re.search('(\S+)\s+\[(.*)\]', line)
+    for line in values.strip().split("\n"):
+        r = re.search("(\S+)\s+\[(.*)\]", line)
         if r:
             values = OrderedDict()
-            for one_value in r.group(2).split(','):
-                if '=' in one_value:
-                    key, value = one_value.split('=')
+            for one_value in r.group(2).split(","):
+                if "=" in one_value:
+                    key, value = one_value.split("=")
                     values[key] = Decimal(value)
                 else:
                     values[one_value] = None
@@ -182,11 +182,11 @@ def build_constants(metrics, names, values):
 
     # Parse full names for abbreviated values
     metrics_value_names = copy.deepcopy(metrics_values)
-    for line in names.strip().split('\n'):
-        r = re.search('(\S+)\s+\[(.*)\]', line)
+    for line in names.strip().split("\n"):
+        r = re.search("(\S+)\s+\[(.*)\]", line)
         if r:
             metric = r.group(1)
-            names = r.group(2).split(',')
+            names = r.group(2).split(",")
             keys = list(metrics_value_names[metric].keys())
             for i, name in enumerate(names):
                 metrics_value_names[metric][keys[i]] = name
@@ -201,53 +201,55 @@ def print_constants(metrics, names, values):
     constants = build_constants(metrics, names, values)
     metrics_abbreviations, metrics_mandatory, metrics_values, metrics_value_names = constants
 
-    header = 'METRICS_ABBREVIATIONS = OrderedDict(['
+    header = "METRICS_ABBREVIATIONS = OrderedDict(["
     MA = [header]
     for i, key in enumerate(metrics_abbreviations):
         if i == 0:
             MA[0] += "('{0}', '{1}'),".format(key, metrics_abbreviations[key])
         else:
-            MA.append(' ' * len(header) + "('{0}', '{1}'),".format(key, metrics_abbreviations[key]))
-    MA.append(' ' * len(header) + '])')
-    print('\n'.join(MA))
+            MA.append(" " * len(header) + "('{0}', '{1}'),".format(key, metrics_abbreviations[key]))
+    MA.append(" " * len(header) + "])")
+    print("\n".join(MA))
 
     print()
-    print('METRICS_MANDATORY =', repr(metrics_mandatory))
+    print("METRICS_MANDATORY =", repr(metrics_mandatory))
 
     print()
-    header = 'METRICS_VALUES = {'
+    header = "METRICS_VALUES = {"
     MV = [header]
     for i, key in enumerate(metrics_values):
         values = []
         for possible_value in metrics_values[key]:
             if metrics_values[key][possible_value] is None:
-                one_value = 'None'
+                one_value = "None"
             else:
                 one_value = "D('{0}')".format(metrics_values[key][possible_value])
             values.append("'{0}': {1}".format(possible_value, one_value))
-        values = ', '.join(values)
+        values = ", ".join(values)
         if i == 0:
             MV[0] += "'{0}': {{{1}}},".format(key, values)
         else:
-            MV.append(' ' * len(header) + "'{0}': {{{1}}},".format(key, values))
-    MV.append(' ' * len(header) + '}')
-    print('\n'.join(MV))
+            MV.append(" " * len(header) + "'{0}': {{{1}}},".format(key, values))
+    MV.append(" " * len(header) + "}")
+    print("\n".join(MV))
 
     print()
-    header = 'METRICS_VALUE_NAMES = OrderedDict(['
+    header = "METRICS_VALUE_NAMES = OrderedDict(["
     MVN = [header]
     for i, key in enumerate(metrics_value_names):
-        values_dict_string = str(metrics_value_names[key]).replace('), ', '),\n' + ' ' * (len(header) + len(key) + 18))
+        values_dict_string = str(metrics_value_names[key]).replace(
+            "), ", "),\n" + " " * (len(header) + len(key) + 18)
+        )
         if i == 0:
             MVN[0] += "('{0}', {1}),".format(key, values_dict_string)
         else:
-            MVN.append(' ' * len(header) + "('{0}', {1}),".format(key, values_dict_string))
-    MVN.append(' ' * len(header) + '])')
-    print('\n'.join(MVN))
+            MVN.append(" " * len(header) + "('{0}', {1}),".format(key, values_dict_string))
+    MVN.append(" " * len(header) + "])")
+    print("\n".join(MVN))
 
 
-if __name__ == '__main__':
-    print('# CVSS2')
+if __name__ == "__main__":
+    print("# CVSS2")
     print_constants(METRICS_2, NAMES_2, VALUES_2)
-    print('\n\n# CVSS3')
+    print("\n\n# CVSS3")
     print_constants(METRICS_3, NAMES_3, VALUES_3)
