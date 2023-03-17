@@ -201,7 +201,7 @@ class CVSS3(object):
         also stored, as they may be used for printing back the minimal vector.
         """
         self.original_metrics = copy.copy(self.metrics)
-        for abbreviation in ["MAV", "MAC", "MPR", "MUI", "MC", "MI", "MA"]:
+        for abbreviation in ["MAV", "MAC", "MPR", "MUI", "MC", "MS", "MI", "MA"]:
             if abbreviation not in self.metrics or self.metrics[abbreviation] == "X":
                 self.metrics[abbreviation] = self.metrics[abbreviation[1:]]
 

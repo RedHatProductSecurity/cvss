@@ -74,7 +74,7 @@ METRICS_ABBREVIATIONS_JSON = OrderedDict(
 
 METRICS_MANDATORY = ["AV", "AC", "PR", "UI", "S", "C", "I", "A"]
 TEMPORAL_METRICS = ["E", "RL", "RC"]
-ENVIRONMENTAL_METRICS = ["CR", "IR", "AR", "MAV", "MAC", "MPR", "MUI", "MC", "MI", "MA"]
+ENVIRONMENTAL_METRICS = ["CR", "IR", "AR", "MAV", "MAC", "MPR", "MUI", "MS", "MC", "MI", "MA"]
 
 METRICS_VALUES = {
     "AV": {"N": D("0.85"), "A": D("0.62"), "L": D("0.55"), "P": D("0.2")},
