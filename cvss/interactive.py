@@ -102,7 +102,7 @@ def ask_interactively(version=3.1, all_metrics=False, no_colors=False):
         while True:
             print(METRICS_ABBREVIATIONS[metric] + ":", end=" ")
             print("/".join(values), end=" ")
-            input_value = string_input().upper()
+            input_value = string_input().strip().upper()
             if not input_value:
                 if version == 2:
                     input_value = "ND"
