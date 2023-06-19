@@ -10,6 +10,7 @@ mandatory metrics and computes CVSS3.1.
 from __future__ import print_function
 
 import argparse
+import json
 
 from cvss import CVSSError, ask_interactively
 
@@ -25,6 +26,9 @@ def main():
         parser.add_argument("-v", "--vector", help="input string with CVSS vector")
         parser.add_argument(
             "-n", "--no-colors", action="store_true", help="do not use terminal coloring"
+        )
+        parser.add_argument(
+            "-j", "--json", action="store_true", help="output vector in JSON format"
         )
         args = parser.parse_args()
 
@@ -70,6 +74,9 @@ def main():
                     print(scores[i])
             print("Cleaned vector:       ", cvss_vector.clean_vector())
             print("Red Hat vector:       ", cvss_vector.rh_vector())
+            if args.json:
+                json_output = json.dumps(cvss_vector.as_json(sort=True, minimal=True), indent=2)
+                print("CVSS vector in JSON:", json_output, sep="\n")
     except (KeyboardInterrupt, EOFError):
         print()
 
