@@ -95,3 +95,27 @@ class CVSS3RHMalformedError(CVSS3Error):
     """
 
     pass
+
+
+class CVSS4Error(CVSSError):
+    """
+    General CVSS4 exception.
+    """
+
+    pass
+
+
+class CVSS4MalformedError(CVSS4Error):
+    """
+    Exception for malformed input CVSS4 vectors.
+    """
+
+    pass
+
+
+class CVSS4MandatoryError(CVSS4Error):
+    """
+    Exception for missing mandatory fields.
+    """
+
+    pass
