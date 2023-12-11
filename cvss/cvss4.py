@@ -91,10 +91,10 @@ class CVSS4(object):
 
     def check_mandatory(self):
         """
-        Checks if mandatory fields are in CVSS3 vector.
+        Checks if mandatory fields are in CVSS4 vector.
 
         Raises:
-            CVSS3MandatoryError: if mandatory metric is missing in the vector
+            CVSS4MandatoryError: if mandatory metric is missing in the vector
         """
         missing = []
         for mandatory_metric in METRICS_MANDATORY:
@@ -153,6 +153,12 @@ class CVSS4(object):
 
         if self.vector.endswith("/"):
             raise CVSS4MalformedError('Malformed CVSS4 vector, trailing "/"')
+        # Handle 'CVSS:4.x' in the beginning of vector and split vector
+        if not self.vector.startswith("CVSS:4.0/"):
+            raise CVSS4MalformedError(
+                'Malformed CVSS4 vector "{0}" is missing mandatory prefix '
+                "or uses unsupported CVSS version".format(self.vector)
+            )
         try:
             fields = self.vector.split("/")[1:]
         except IndexError:
@@ -557,7 +563,7 @@ class CVSS4(object):
             output_prefix (bool): defines if CVSS vector should be printed with prefix
 
         Returns:
-            (str): cleaned CVSS3 with metrics in correct order
+            (str): cleaned CVSS4 with metrics in correct order
         """
         vector = []
         for metric in METRICS_ABBREVIATIONS:
@@ -566,7 +572,7 @@ class CVSS4(object):
                 if value != "X":
                     vector.append("{0}:{1}".format(metric, value))
         if output_prefix:
-            prefix = "CVSS:4/"
+            prefix = "CVSS:4.0/"
         else:
             prefix = ""
         return prefix + "/".join(vector)
