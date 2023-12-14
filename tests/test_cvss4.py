@@ -5,6 +5,7 @@ from os import path
 sys.path.insert(0, path.dirname(path.dirname(path.abspath(__file__))))
 
 from cvss.cvss4 import CVSS4
+from cvss.exceptions import CVSS4MalformedError
 
 WD = path.dirname(path.abspath(sys.argv[0]))  # Manage to run script anywhere in the path
 
@@ -162,6 +163,33 @@ class TestCVSS4(unittest.TestCase):
         self.assertEqual(json_data["vectorString"], v)
         self.assertIn("modifiedSubsequentSystemImpactIntegrity", json_data)
         self.assertIn("subsequentSystemImpactIntegrity", json_data)
+
+    def test_invalid_metric_key(self):
+        v = "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:N/SA:N/JJ:H"
+        error = ""
+        try:
+            CVSS4(v)
+        except CVSS4MalformedError as e:
+            error = str(e)
+        self.assertEqual(error, 'Invalid metric key in CVSS4 vector "JJ:H"')
+
+    def test_invalid_metric_value(self):
+        v = "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:N/SA:J"
+        error = ""
+        try:
+            CVSS4(v)
+        except CVSS4MalformedError as e:
+            error = str(e)
+        self.assertEqual(error, 'Invalid metric value in CVSS4 vector "SA:J"')
+
+    def test_duplicate_metric_key(self):
+        v = "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:N/SI:H"
+        error = ""
+        try:
+            CVSS4(v)
+        except CVSS4MalformedError as e:
+            error = str(e)
+        self.assertEqual(error, 'Duplicate metric "SI"')
 
 
 if __name__ == "__main__":

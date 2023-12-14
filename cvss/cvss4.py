@@ -176,6 +176,15 @@ class CVSS4(object):
 
             if metric in self.metrics:
                 raise CVSS4MalformedError('Duplicate metric "{0}"'.format(metric))
+
+            if metric not in METRICS_VALUE_NAMES:
+                raise CVSS4MalformedError('Invalid metric key in CVSS4 vector "{0}"'.format(field))
+
+            if value not in METRICS_VALUE_NAMES[metric]:
+                raise CVSS4MalformedError(
+                    'Invalid metric value in CVSS4 vector "{0}"'.format(field)
+                )
+
             self.metrics[metric] = value
 
     def get_eq_maxes(self, lookup, eq):
@@ -212,9 +221,6 @@ class CVSS4(object):
             modified_selected = self.metrics["M" + metric]
             if modified_selected != "X":
                 return modified_selected
-
-        # if metric not in self.metrics and "M" + metric not in self.metrics:
-        #     return "X"
 
         return selected
 
