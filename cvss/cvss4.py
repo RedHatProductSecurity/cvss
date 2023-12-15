@@ -36,7 +36,6 @@ from __future__ import unicode_literals
 
 import copy
 from decimal import ROUND_CEILING, ROUND_HALF_UP
-from decimal import Decimal
 from decimal import Decimal as D
 
 from .constants4 import (
@@ -54,7 +53,7 @@ from .exceptions import CVSS4MalformedError, CVSS4MandatoryError
 
 
 def round_away_from_zero(x, dp):
-    return float(Decimal(x).quantize(Decimal("0." + "0" * dp), rounding=ROUND_HALF_UP))
+    return float(D(x).quantize(D("0." + "0" * dp), rounding=ROUND_HALF_UP))
 
 
 def round_up(value):
