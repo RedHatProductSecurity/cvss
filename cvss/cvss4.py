@@ -80,7 +80,7 @@ class CVSS4(object):
         self.missing_metrics = []
 
         self.base_score = None
-        self.base_severity = None
+        self.severity = None
 
         self.parse_vector()
         self.check_mandatory()
@@ -597,13 +597,13 @@ class CVSS4(object):
         Returns:
             (str): Severity string
         """
-        if self.base_score == D("0.0"):
+        if self.base_score == 0.0:
             self.severity = "None"
-        elif self.base_score <= D("3.9"):
+        elif self.base_score <= 3.9:
             self.severity = "Low"
-        elif self.base_score <= D("6.9"):
+        elif self.base_score <= 6.9:
             self.severity = "Medium"
-        elif self.base_score <= D("8.9"):
+        elif self.base_score <= 8.9:
             self.severity = "High"
         else:
             self.severity = "Critical"
@@ -647,7 +647,7 @@ class CVSS4(object):
         for metric in METRICS:
             add_metric_to_data(metric)
         data["baseScore"] = float(self.base_score)
-        data["baseSeverity"] = self.base_severity
+        data["baseSeverity"] = self.severity
 
         if sort:
             data = OrderedDict(sorted(data.items()))
