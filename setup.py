@@ -64,4 +64,6 @@ setup(
             "cvss_calculator = cvss.cvss_calculator:main",
         ],
     },
+    # to make Python 2 and Python 3 compatible wheel
+    options={"bdist_wheel": {"universal": "1"}},
 )
