@@ -1,8 +1,8 @@
 CVSS
 ====
 
-This Python package contains CVSS v2 and v3 computation utilities and
-interactive calculator compatible with both Python 2 and Python 3.
+This Python package contains CVSS v2, v3 and v4 computation utilities and
+interactive calculator (for v2 and v3 only) compatible with both Python 2 and Python 3.
 
 The library is tested on all currently-supported Python versions available
 via GitHub Actions (with the exception of Python 2.7, which is EOL but
@@ -23,7 +23,7 @@ Library
 
 .. code-block:: python
 
-    from cvss import CVSS2, CVSS3
+    from cvss import CVSS2, CVSS3, CVSS4
 
 
     vector = 'AV:L/AC:L/Au:M/C:N/I:P/A:C/E:U/RL:W/RC:ND/CDP:L/TD:H/CR:ND/IR:ND/AR:M'
@@ -41,6 +41,14 @@ Library
     print(c.scores())
     print(c.severities())
 
+    print()
+
+    vector = 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:N'
+    c = CVSS4(vector)
+    print(vector)
+    print(c.base_score)
+    print(c.severity)
+
 Sample output:
 
 ::
@@ -53,6 +61,10 @@ Sample output:
    CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L
    (6.5, 6.0, 5.3)
    ('Medium', 'Medium', 'Medium')
+
+   CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:N
+   9.9
+   Critical
 
 Interactive calculator
 ~~~~~~~~~~~~~~~~~~~~~~
