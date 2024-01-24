@@ -27,7 +27,7 @@ with open("cvss/__init__.py") as f:
 setup(
     name="cvss",
     version=version,
-    description="CVSS2/3 library with interactive calculator for Python 2 and Python 3",
+    description="CVSS2/3/4 library with interactive calculator for Python 2 and Python 3",
     long_description=long_description,
     url="https://github.com/RedHatProductSecurity/cvss",
     project_urls={
