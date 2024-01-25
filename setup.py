@@ -29,6 +29,7 @@ setup(
     version=version,
     description="CVSS2/3/4 library with interactive calculator for Python 2 and Python 3",
     long_description=long_description,
+    long_description_content_type="text/x-rst",
     url="https://github.com/RedHatProductSecurity/cvss",
     project_urls={
         "Releases": "https://github.com/RedHatProductSecurity/cvss/releases",
@@ -63,4 +64,6 @@ setup(
             "cvss_calculator = cvss.cvss_calculator:main",
         ],
     },
+    # to make Python 2 and Python 3 compatible wheel
+    options={"bdist_wheel": {"universal": "1"}},
 )
