@@ -39,7 +39,6 @@ def main():
         true_version_key = next((key for key, value in args.__dict__.items() if value), None)
         # Use the found key to get the version from version_mapping, default to DEFAULT_VERSION if not found
         version = version_mapping.get(true_version_key, DEFAULT_VERSION)
-
         # Vector input, either from command line or interactively
         if args.vector:
             vector_string = args.vector
@@ -61,22 +60,30 @@ def main():
             print(e)
         else:
             scores = cvss_vector.scores()
+            severities = None
             if version == 2:
                 print("CVSS2")
-                severities = None
-            elif version >= 3.0:
+            elif 3.0 <= version < 4.0:
                 print("CVSS3")
+                severities = cvss_vector.severities()
+            elif version >= 4.0:
+                print("CVSS4")
                 severities = cvss_vector.severities()
             else:
                 raise ValueError("Unknown CVSS version: {0}".format(version))
 
             for i, score_name in enumerate(["Base Score", "Temporal Score", "Environmental Score"]):
-                print(score_name + ":" + " " * (PAD - len(score_name) - 2), end="")
-
-                if version >= 3.0:
-                    print(scores[i], "({0})".format(severities[i]))
-                else:
-                    print(scores[i])
+                score = None
+                try:
+                    if version >= 3.0:
+                        score = scores[i], "({0})".format(severities[i])
+                    else:
+                        score = (scores[i], )
+                except IndexError:
+                    pass
+                if score:
+                    print(score_name + ":" + " " * (PAD - len(score_name) - 2), end="")
+                    print(*score)
             print("Cleaned vector:       ", cvss_vector.clean_vector())
             print("Red Hat vector:       ", cvss_vector.rh_vector())
             if args.json:
