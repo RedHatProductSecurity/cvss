@@ -39,7 +39,7 @@ def main():
         true_version_key = next((key for key, value in args.__dict__.items() if value), None)
         # Use the found key to get the version from version_mapping, default to DEFAULT_VERSION if not found
         version = version_mapping.get(true_version_key, DEFAULT_VERSION)
-        print(version)
+
         # Vector input, either from command line or interactively
         if args.vector:
             vector_string = args.vector
