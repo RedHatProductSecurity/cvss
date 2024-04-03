@@ -32,7 +32,7 @@ def ask_interactively(version=3.1, all_metrics=False, no_colors=False):
     Asks user to build CVSS vector string interactively.
 
     Args:
-        version (float): 2 or 3.0/3.1 for CVSS2 or CVSS3 respectively
+        version (float): 2 or 3.0/3.1 or 4 for CVSS2 or CVSS3 or CVSS4 respectively
         all_metrics (bool): If true, temporal and environmental metrics are asked, else only base
                             metrics are asked for
         no_colors (bool): If true, terminal coloring is not used in interactive mode
@@ -48,9 +48,16 @@ def ask_interactively(version=3.1, all_metrics=False, no_colors=False):
             METRICS_MANDATORY,
             METRICS_VALUE_NAMES,
         )
-    elif version >= 3.0:
+    elif 3.0 <= version < 4.0:
         print("Interactive CVSS3 calculator")
         from .constants3 import (
+            METRICS_ABBREVIATIONS,
+            METRICS_MANDATORY,
+            METRICS_VALUE_NAMES,
+        )
+    elif version == 4.0:
+        print("Interactive CVSS4 calculator")
+        from .constants4 import (
             METRICS_ABBREVIATIONS,
             METRICS_MANDATORY,
             METRICS_VALUE_NAMES,
@@ -117,6 +124,8 @@ def ask_interactively(version=3.1, all_metrics=False, no_colors=False):
         vector_string = "CVSS:3.0/" + "/".join(vector)
     elif version == 3.1:
         vector_string = "CVSS:3.1/" + "/".join(vector)
+    elif version == 4.0:
+        vector_string = "CVSS:4.0/" + "/".join(vector)
     else:
         vector_string = "/".join(vector)
     return vector_string
