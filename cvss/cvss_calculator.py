@@ -12,16 +12,18 @@ from __future__ import print_function
 import argparse
 import json
 
-from cvss import CVSSError, ask_interactively
+from cvss import CVSS2, CVSS3, CVSS4, CVSSError, ask_interactively
 
 PAD = 24  # string padding for score names
+DEFAULT_VERSION = 3.1
 
 
 def main():
     try:
         parser = argparse.ArgumentParser(description=__doc__)
-        parser.add_argument("-2", action="store_true", help="compute CVSS2 instead")
-        parser.add_argument("-3", action="store_true", help="compute CVSS3.0 instead")
+        parser.add_argument("-2", action="store_true", help="compute CVSS2 (default {0})".format(DEFAULT_VERSION))
+        parser.add_argument("-3", action="store_true", help="compute CVSS3.0 (default {0})".format(DEFAULT_VERSION))
+        parser.add_argument("-4", action="store_true", help="compute CVSS4.0 (default {0})".format(DEFAULT_VERSION))
         parser.add_argument("-a", "--all", action="store_true", help="ask for all metrics")
         parser.add_argument("-v", "--vector", help="input string with CVSS vector")
         parser.add_argument(
@@ -32,17 +34,12 @@ def main():
         )
         args = parser.parse_args()
 
-        # Import the correct CVSS module
-        if getattr(args, "2"):
-            version = 2
-            from cvss import CVSS2 as CVSS
-        else:
-            if getattr(args, "3"):
-                version = 3.0
-            else:
-                version = 3.1
-            from cvss import CVSS3 as CVSS
-
+        version_mapping = {"2": 2, "3": 3.0, "3.1": 3.1, "4": 4.0}
+        # Find the key in args where the value is True
+        true_version_key = next((key for key, value in args.__dict__.items() if value), None)
+        # Use the found key to get the version from version_mapping, default to DEFAULT_VERSION if not found
+        version = version_mapping.get(true_version_key, DEFAULT_VERSION)
+        print(version)
         # Vector input, either from command line or interactively
         if args.vector:
             vector_string = args.vector
@@ -51,7 +48,15 @@ def main():
 
         # Compute scores and clean vector
         try:
-            cvss_vector = CVSS(vector_string)
+            # Init the correct CVSS module
+            if version == 2:
+                cvss_vector = CVSS2(vector_string)
+            elif 3.0 <= version < 4.0:
+                cvss_vector = CVSS3(vector_string)
+            elif version == 4.0:
+                cvss_vector = CVSS4(vector_string)
+            else:
+                raise CVSSError("Unknown version: {0}".format(version))
         except CVSSError as e:
             print(e)
         else:
