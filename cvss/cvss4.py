@@ -608,6 +608,32 @@ class CVSS4(object):
         else:
             self.severity = "Critical"
 
+    def scores(self):
+        """
+        Returns computed base score as tuple for backwards compatibility.
+
+        Returns:
+            (tuple of floats): Base Score
+        """
+        return (self.base_score,)
+
+    def severities(self):
+        """
+        Returns severities based on base score as tuple for backwards compatibility.
+
+        Returns:
+            (tuple): Base Severity as string
+        """
+        return (self.severity,)
+
+    def rh_vector(self):
+        """
+        Returns cleaned vector with score in Red Hat notation, e.g. score/vector.
+
+        Example: 7.3/CVSS:4.0/AV:P/AC:H/AT:N/PR:H/UI:P/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:A
+        """
+        return str(self.base_score) + "/" + self.clean_vector()
+
     def as_json(self, sort=False, minimal=False):
         """
         Returns a dictionary formatted with attribute names and values defined by the official
