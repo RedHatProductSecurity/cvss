@@ -630,7 +630,7 @@ class CVSS4(object):
         """
         Returns cleaned vector with score in Red Hat notation, e.g. score/vector.
 
-        Example: 6.5/CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L
+        Example: 7.3/CVSS:4.0/AV:P/AC:H/AT:N/PR:H/UI:P/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:A
         """
         return str(self.base_score) + "/" + self.clean_vector()
 
