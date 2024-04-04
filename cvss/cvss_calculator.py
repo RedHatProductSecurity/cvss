@@ -21,9 +21,15 @@ DEFAULT_VERSION = 3.1
 def main():
     try:
         parser = argparse.ArgumentParser(description=__doc__)
-        parser.add_argument("-2", action="store_true", help="compute CVSS2 (default {0})".format(DEFAULT_VERSION))
-        parser.add_argument("-3", action="store_true", help="compute CVSS3.0 (default {0})".format(DEFAULT_VERSION))
-        parser.add_argument("-4", action="store_true", help="compute CVSS4.0 (default {0})".format(DEFAULT_VERSION))
+        parser.add_argument(
+            "-2", action="store_true", help="compute CVSS2 (default {0})".format(DEFAULT_VERSION)
+        )
+        parser.add_argument(
+            "-3", action="store_true", help="compute CVSS3.0 (default {0})".format(DEFAULT_VERSION)
+        )
+        parser.add_argument(
+            "-4", action="store_true", help="compute CVSS4.0 (default {0})".format(DEFAULT_VERSION)
+        )
         parser.add_argument("-a", "--all", action="store_true", help="ask for all metrics")
         parser.add_argument("-v", "--vector", help="input string with CVSS vector")
         parser.add_argument(
@@ -78,7 +84,7 @@ def main():
                     if version >= 3.0:
                         score = scores[i], "({0})".format(severities[i])
                     else:
-                        score = (scores[i], )
+                        score = (scores[i],)
                 except IndexError:
                     pass
                 if score:
