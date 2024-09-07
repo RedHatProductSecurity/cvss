@@ -35,7 +35,7 @@ The library is compatible with both Python 2 and Python 3.
 from __future__ import unicode_literals
 
 import copy
-from decimal import ROUND_CEILING, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP
 from decimal import Decimal as D
 
 from .constants4 import (
@@ -52,16 +52,8 @@ from .constants4 import (
 from .exceptions import CVSS4MalformedError, CVSS4MandatoryError
 
 
-def round_away_from_zero(x, dp):
-    return float(D(x).quantize(D("0." + "0" * dp), rounding=ROUND_HALF_UP))
-
-
-def round_up(value):
-    """
-    Round up is defined as the smallest number, specified to one decimal place, that is equal to
-    or higher than its input. For example, Round up (4.02) is 4.1; and Round up (4.00) is 4.0.
-    """
-    return value.quantize(D("0.1"), rounding=ROUND_CEILING)
+def round_away_from_zero(x):
+    return float(D(x * 10).quantize(D("1"), rounding=ROUND_HALF_UP) / 10)
 
 
 class CVSS4(object):
@@ -555,7 +547,7 @@ class CVSS4(object):
         value = max(0.0, value)
         value = min(10.0, value)
 
-        self.base_score = round_away_from_zero(value, 1)
+        self.base_score = round_away_from_zero(value)
 
     def __hash__(self):
         return hash(self.clean_vector())
