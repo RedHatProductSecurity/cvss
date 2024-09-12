@@ -321,14 +321,6 @@ class CVSS2(object):
         """
         return str(self.scores()[0]) + "/" + self.clean_vector()
 
-    def __eq__(self, o):
-        if isinstance(o, CVSS2):
-            return self.clean_vector().__eq__(o.clean_vector())
-        return NotImplemented
-
-    def __hash__(self):
-        return hash(self.clean_vector())
-
     def as_json(self, sort=False, minimal=False):
         """
         Returns a dictionary formatted with attribute names and values defined by the official
@@ -381,3 +373,11 @@ class CVSS2(object):
             data = OrderedDict(sorted(data.items()))
 
         return data
+
+    def __hash__(self) -> int:
+        return hash(self.clean_vector())
+
+    def __eq__(self, o) -> bool:
+        if isinstance(o, CVSS2):
+            return self.clean_vector() == o.clean_vector()
+        return False
