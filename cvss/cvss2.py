@@ -374,10 +374,10 @@ class CVSS2(object):
 
         return data
 
-    def __hash__(self) -> int:
+    def __hash__(self):
         return hash(self.clean_vector())
 
-    def __eq__(self, o) -> bool:
+    def __eq__(self, o):
         if isinstance(o, CVSS2):
             return self.clean_vector() == o.clean_vector()
         return False

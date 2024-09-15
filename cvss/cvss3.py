@@ -501,10 +501,10 @@ class CVSS3(object):
             data = OrderedDict(sorted(data.items()))
         return data
 
-    def __hash__(self) -> int:
+    def __hash__(self):
         return hash(self.clean_vector())
 
-    def __eq__(self, o) -> bool:
+    def __eq__(self, o):
         if isinstance(o, CVSS3):
             return self.clean_vector() == o.clean_vector()
         return False
