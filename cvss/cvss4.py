@@ -549,9 +549,6 @@ class CVSS4(object):
 
         self.base_score = round_away_from_zero(value)
 
-    def __hash__(self):
-        return hash(self.clean_vector())
-
     def clean_vector(self, output_prefix=True):
         """
         Returns vector without optional metrics marked as X and in preferred order.
@@ -670,3 +667,11 @@ class CVSS4(object):
         if sort:
             data = OrderedDict(sorted(data.items()))
         return data
+
+    def __hash__(self):
+        return hash(self.clean_vector())
+
+    def __eq__(self, o):
+        if isinstance(o, CVSS4):
+            return self.clean_vector() == o.clean_vector()
+        return False
