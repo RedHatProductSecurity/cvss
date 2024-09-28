@@ -190,6 +190,62 @@ class TestCVSS2(unittest.TestCase):
         v = "ABC/AV:L/AC:H/Au:M/C:C/I:P/A:P"
         self.assertRaises(CVSS2RHMalformedError, CVSS2.from_rh_vector, v)
 
+    def test_temporal_vector(self):
+        """
+        Test for retrieving only the Temporal CVSS Vector.
+        """
+        v = "AV:A/AC:H/Au:S/C:C/I:C/A:P/E:U/RL:U/RC:UR/CDP:ND/TD:ND/CR:L/IR:M/AR:ND"
+        self.assertEqual(
+            "E:U/RL:U/RC:UR",
+            CVSS2(v).temporal_vector(),
+        )
+
+        v = "AV:A/AC:H/Au:S/C:C/I:C/A:P/CDP:ND/TD:ND/CR:L/IR:M/AR:ND"
+        self.assertEqual(
+            "E:ND/RL:ND/RC:ND",
+            CVSS2(v).temporal_vector(),
+        )
+
+        v = "AV:A/AC:H/Au:S/C:C/I:C/A:P/RL:U/RC:UR/CDP:ND/TD:ND/CR:L/IR:M/AR:ND"
+        self.assertEqual(
+            "E:ND/RL:U/RC:UR",
+            CVSS2(v).temporal_vector(),
+        )
+
+        v = "AV:A/AC:H/Au:S/C:C/I:C/A:P/E:U/RC:UR/CDP:ND/TD:ND/CR:L/IR:M/AR:ND"
+        self.assertEqual(
+            "E:U/RL:ND/RC:UR",
+            CVSS2(v).temporal_vector(),
+        )
+
+        v = "AV:A/AC:H/Au:S/C:C/I:C/A:P/E:U/RL:U/CDP:ND/TD:ND/CR:L/IR:M/AR:ND"
+        self.assertEqual(
+            "E:U/RL:U/RC:ND",
+            CVSS2(v).temporal_vector(),
+        )
+
+    def test_environmental_vector(self):
+        """
+        Test for retrieving only the Environmental CVSS Vector.
+        """
+        v = "AV:A/AC:H/Au:S/C:C/I:C/A:P/E:U/RL:U/CDP:N/TD:N/CR:L/IR:M/AR:L"
+        self.assertEqual(
+            "CDP:N/TD:N/CR:L/IR:M/AR:L",
+            CVSS2(v).environmental_vector(),
+        )
+
+        v = "AV:A/AC:H/Au:S/C:C/I:C/A:P/E:U/RL:U"
+        self.assertEqual(
+            "CDP:ND/TD:ND/CR:ND/IR:ND/AR:ND",
+            CVSS2(v).environmental_vector(),
+        )
+
+        v = "AV:A/AC:H/Au:S/C:C/I:C/A:P/E:U/RL:U/TD:N/CR:L/IR:M/AR:L"
+        self.assertEqual(
+            "CDP:ND/TD:N/CR:L/IR:M/AR:L",
+            CVSS2(v).environmental_vector(),
+        )
+
     def test_parse_from_text_cvss2(self):
         """
         Tests for parsing CVSS from text.
