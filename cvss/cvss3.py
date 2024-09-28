@@ -441,6 +441,28 @@ class CVSS3(object):
         """
         return str(self.scores()[0]) + "/" + self.clean_vector()
 
+    def temporal_vector(self):
+        """
+        Returns the temporal vector from the full CVSS vector.
+
+        Returns:
+            (str): Temporal CVSS vector.
+        """
+        return "/".join(
+            [metric + ":" + self.metrics.get(metric, "X") for metric in TEMPORAL_METRICS]
+        )
+
+    def environmental_vector(self):
+        """
+        Returns the environmental vector from the full CVSS vector.
+
+        Returns:
+            (str): Environmental CVSS vector.
+        """
+        return "/".join(
+            [metric + ":" + self.metrics.get(metric, "X") for metric in ENVIRONMENTAL_METRICS]
+        )
+
     def as_json(self, sort=False, minimal=False):
         """
         Returns a dictionary formatted with attribute names and values defined by the official
