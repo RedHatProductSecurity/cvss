@@ -40,6 +40,7 @@ from decimal import Decimal as D
 
 from .constants4 import (
     CVSS_LOOKUP_GLOBAL,
+    EPSILON,
     MAX_COMPOSED,
     MAX_SEVERITY,
     METRICS,
@@ -58,13 +59,12 @@ def final_rounding(x):
     "round half to even". We actually want "round half away from zero" aka "round half up" for
     positive numbers.
 
-    Make sure that values like the following are correctly rounded despite floating point
-    inaccuracies:
+    Add a small value to make sure that values like the following are correctly rounded despite
+    floating point inaccuracies:
 
     8.6 - 7.15 = 1.4499999999999993 (float) => 1.5
     """
-    pre_rounded = D(x).quantize(D("0.00001"), rounding=ROUND_HALF_UP)
-    return float(D(pre_rounded).quantize(D("0.1"), rounding=ROUND_HALF_UP))
+    return float(D(x + EPSILON).quantize(D("0.1"), rounding=ROUND_HALF_UP))
 
 
 class CVSS4(object):
