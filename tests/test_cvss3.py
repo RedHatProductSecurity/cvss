@@ -230,6 +230,83 @@ class TestCVSS3(unittest.TestCase):
         v = "ABC/CVSS:3.0/AV:A/AC:H/PR:N/UI:R/S:C/C:L/I:H/A:L"
         self.assertRaises(CVSS3RHMalformedError, CVSS3.from_rh_vector, v)
 
+    def test_temporal_vector(self):
+        """
+        Test for retrieving only the Temporal CVSS Vector.
+        """
+        v = (
+            "CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/"
+            "E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X"
+        )
+        self.assertEqual(
+            "E:H/RL:O/RC:R",
+            CVSS3(v).temporal_vector(),
+        )
+
+        v = (
+            "CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/"
+            "CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X"
+        )
+        self.assertEqual(
+            "E:X/RL:X/RC:X",
+            CVSS3(v).temporal_vector(),
+        )
+
+        v = (
+            "CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/"
+            "RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X"
+        )
+        self.assertEqual(
+            "E:X/RL:O/RC:R",
+            CVSS3(v).temporal_vector(),
+        )
+
+        v = (
+            "CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/"
+            "E:H/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X"
+        )
+        self.assertEqual(
+            "E:H/RL:X/RC:R",
+            CVSS3(v).temporal_vector(),
+        )
+
+        v = (
+            "CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/"
+            "E:H/RL:O/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X"
+        )
+        self.assertEqual(
+            "E:H/RL:O/RC:X",
+            CVSS3(v).temporal_vector(),
+        )
+
+    def test_environmental_vector(self):
+        """
+        Test for retrieving only the Environmental CVSS Vector.
+        """
+        v = (
+            "CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/"
+            "E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X"
+        )
+        self.assertEqual(
+            "CR:H/IR:X/AR:X/MAV:P/MAC:H/MPR:H/MUI:R/MS:C/MC:L/MI:H/MA:N",
+            CVSS3(v).environmental_vector(),
+        )
+
+        v = "CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R"
+        self.assertEqual(
+            "CR:X/IR:X/AR:X/MAV:P/MAC:H/MPR:H/MUI:R/MS:C/MC:H/MI:H/MA:N",
+            CVSS3(v).environmental_vector(),
+        )
+
+        v = (
+            "CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/"
+            "E:H/RL:O/RC:R/MAV:N/MAC:L/MPR:N/MUI:R/MS:C/MC:L/MI:N/MA:H/CR:M/IR:L/AR:M"
+        )
+        self.assertEqual(
+            "CR:M/IR:L/AR:M/MAV:N/MAC:L/MPR:N/MUI:R/MS:C/MC:L/MI:N/MA:H",
+            CVSS3(v).environmental_vector(),
+        )
+
     def test_parse_from_text_cvss3(self):
         i = "CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H"
         e = [CVSS3(i)]
