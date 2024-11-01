@@ -40,6 +40,7 @@ from decimal import Decimal as D
 
 from .constants4 import (
     CVSS_LOOKUP_GLOBAL,
+    EPSILON,
     MAX_COMPOSED,
     MAX_SEVERITY,
     METRICS,
@@ -52,8 +53,18 @@ from .constants4 import (
 from .exceptions import CVSS4MalformedError, CVSS4MandatoryError
 
 
-def round_away_from_zero(x):
-    return float(D(x * 10).quantize(D("1"), rounding=ROUND_HALF_UP) / 10)
+def final_rounding(x):
+    """
+    Round to one decimal place. Use Decimal because Python float rounding defaults to
+    "round half to even". We actually want "round half away from zero" aka "round half up" for
+    positive numbers.
+
+    Add a small value to make sure that values like the following are correctly rounded despite
+    floating point inaccuracies:
+
+    8.6 - 7.15 = 1.4499999999999993 (float) => 1.5
+    """
+    return float(D(x + EPSILON).quantize(D("0.1"), rounding=ROUND_HALF_UP))
 
 
 class CVSS4(object):
@@ -547,7 +558,7 @@ class CVSS4(object):
         value = max(0.0, value)
         value = min(10.0, value)
 
-        self.base_score = round_away_from_zero(value)
+        self.base_score = final_rounding(value)
 
     def clean_vector(self, output_prefix=True):
         """

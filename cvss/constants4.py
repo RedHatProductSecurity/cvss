@@ -12,6 +12,10 @@ except ImportError:
     # noinspection PyUnresolvedReferences
     from ordereddict import OrderedDict
 
+# Small enough value which can be added to a value which will be rounded to 1 decimal place so the
+# result is rounded correctly despite floating point inaccuracies.
+EPSILON = 10**-6
+
 METRICS = [
     "AV",
     "AC",
