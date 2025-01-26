@@ -1,3 +1,4 @@
+import ast
 import sys
 import unittest
 from os import path
@@ -5,7 +6,11 @@ from os import path
 sys.path.insert(0, path.dirname(path.dirname(path.abspath(__file__))))
 
 from cvss.cvss4 import CVSS4
-from cvss.exceptions import CVSS4MalformedError
+from cvss.exceptions import (
+    CVSS4MalformedError,
+    CVSS4RHMalformedError,
+    CVSS4RHScoreDoesNotMatch,
+)
 
 WD = path.dirname(path.abspath(sys.argv[0]))  # Manage to run script anywhere in the path
 
@@ -24,6 +29,16 @@ class TestCVSS4(unittest.TestCase):
                 self.assertEqual(
                     expected_score, results_json_score, test_name + " - " + vector + " - JSON"
                 )
+
+    def run_rh_tests_from_file(self, test_name):
+        with open(path.join(WD, test_name)) as f:
+            for line in f:
+                vector, expected_scores = line.strip().split(" - ")
+                expected_scores = ast.literal_eval(expected_scores)
+                tested_rh_vector = str(expected_scores[0]) + "/" + vector
+                result = CVSS4.from_rh_vector(tested_rh_vector)
+                results_scores = result.scores()
+                self.assertEqual(expected_scores, results_scores, test_name + " - " + vector)
 
     def test_base(self):
         """
@@ -208,6 +223,30 @@ class TestCVSS4(unittest.TestCase):
         except CVSS4MalformedError as e:
             error = str(e)
         self.assertEqual(error, 'Duplicate metric "SI"')
+
+    def test_rh_vector(self):
+        """
+        Test for parsing Red Hat style of CVSS vectors, e.g. containing score.
+        """
+        self.run_rh_tests_from_file("vectors_simple4")
+
+        # Bad values
+        v = "8.3/CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:H/VI:H/VA:N/SC:L/SI:L/SA:N"
+        self.assertRaises(CVSS4RHScoreDoesNotMatch, CVSS4.from_rh_vector, v)
+
+        v = "7.0/CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:A/VC:H/VI:N/VA:N/SC:N/SI:L/SA:N"
+        self.assertRaises(CVSS4RHScoreDoesNotMatch, CVSS4.from_rh_vector, v)
+
+        # Vector cannot be split to score/vector
+        v = ""
+        self.assertRaises(CVSS4RHMalformedError, CVSS4.from_rh_vector, v)
+
+        v = "8.3|AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:L/VA:N/SC:H/SI:N/SA:L"
+        self.assertRaises(CVSS4RHMalformedError, CVSS4.from_rh_vector, v)
+
+        # Score is not float
+        v = "ABC|AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:L/VA:N/SC:H/SI:N/SA:L"
+        self.assertRaises(CVSS4RHMalformedError, CVSS4.from_rh_vector, v)
 
 
 if __name__ == "__main__":
