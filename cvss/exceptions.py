@@ -119,3 +119,20 @@ class CVSS4MandatoryError(CVSS4Error):
     """
 
     pass
+
+
+class CVSS4RHScoreDoesNotMatch(CVSS4Error):
+    """
+    Exception when parsing CVSS4 vectors in Red Hat notation, which have score not matching the
+    computed score.
+    """
+
+    pass
+
+
+class CVSS4RHMalformedError(CVSS4Error):
+    """
+    Exception for malformed input CVSS4 vectors in Red Hat notation.
+    """
+
+    pass
