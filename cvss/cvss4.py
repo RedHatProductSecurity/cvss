@@ -50,7 +50,12 @@ from .constants4 import (
     METRICS_VALUE_NAMES,
     OrderedDict,
 )
-from .exceptions import CVSS4MalformedError, CVSS4MandatoryError
+from .exceptions import (
+    CVSS4MalformedError,
+    CVSS4MandatoryError,
+    CVSS4RHMalformedError,
+    CVSS4RHScoreDoesNotMatch,
+)
 
 
 def final_rounding(x):
@@ -90,6 +95,46 @@ class CVSS4(object):
         self.add_missing_optional()
         self.compute_base_score()
         self.compute_severity()
+
+    @classmethod
+    def from_rh_vector(cls, vector):
+        """
+        Creates a CVSS4 object from CVSS vector in Red Hat notation, e.g. containing base score.
+        Also checks if the score matches the vector.
+
+        Args:
+            vector (str): string specifying CVSS4 vector in Red Hat notation, fields may be out of
+                          order, fields which are not mandatory may be missing
+
+        Returns:
+            CVSS4: the generated CVSS4 object created from the vector string
+
+        Raises:
+            CVSS4RHMalformedError: if vector is not in expected format for Red Hat notation
+            CVSS4RHScoreDoesNotMatch: if vector and score do not match
+        """
+        try:
+            score, base_vector = vector.split("/", 1)
+        except ValueError:
+            raise CVSS4RHMalformedError(
+                'Malformed CVSS4 vector in Red Hat notation "{0}"'.format(vector)
+            )
+        try:
+            score_value = float(score)
+        except ValueError:
+            raise CVSS4RHMalformedError(
+                'Malformed CVSS4 vector in Red Hat notation "{0}"'.format(vector)
+            )
+        cvss_object = cls(base_vector)
+        if cvss_object.scores()[0] == score_value:
+            return cvss_object
+        else:
+            raise CVSS4RHScoreDoesNotMatch(
+                'CVSS4 vector in Red Hat notation "{0}" has score of '
+                '"{1}" which does not match specified score of "{2}"'.format(
+                    base_vector, cvss_object.scores()[0], score
+                )
+            )
 
     def check_mandatory(self):
         """
