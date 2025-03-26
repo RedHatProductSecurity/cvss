@@ -16,6 +16,14 @@ except ImportError:
 # result is rounded correctly despite floating point inaccuracies.
 EPSILON = 10**-6
 
+# CVSS4 requires vector metrics to follow a specific order as defined in the specification.
+# Vectors that do not adhere to this order are considered invalid and may be rejected.
+# This module does not enforce field ordering for CVSS4 vector inputs but will reorder them
+# to produce valid CVSS4 vectors.
+# The lists below follow the required CVSS4 ordering.
+# Note that METRICS_ABBREVIATIONS is used to create the clean_vector().
+# Specification: https://www.first.org/cvss/v4-0/specification-document#Vector-String
+
 METRICS = [
     "AV",
     "AC",
@@ -28,12 +36,10 @@ METRICS = [
     "SC",
     "SI",
     "SA",
-    "S",
-    "AU",
-    "R",
-    "V",
-    "RE",
-    "U",
+    "E",
+    "CR",
+    "IR",
+    "AR",
     "MAV",
     "MAC",
     "MAT",
@@ -45,10 +51,12 @@ METRICS = [
     "MSC",
     "MSI",
     "MSA",
-    "CR",
-    "IR",
-    "AR",
-    "E",
+    "S",
+    "AU",
+    "R",
+    "V",
+    "RE",
+    "U",
 ]
 
 METRICS_MANDATORY = [
@@ -78,12 +86,10 @@ METRICS_ABBREVIATIONS = OrderedDict(
         ("SC", "Subsequent System Impact Confidentiality"),
         ("SI", "Subsequent System Impact Integrity"),
         ("SA", "Subsequent System Impact Availability"),
-        ("S", "Safety"),
-        ("AU", "Automatable"),
-        ("R", "Recovery"),
-        ("V", "Value Density"),
-        ("RE", "Vulnerability Response Effort"),
-        ("U", "Provider Urgency"),
+        ("E", "Exploit Maturity"),
+        ("CR", "Confidentiality Req."),
+        ("IR", "Integrity Req."),
+        ("AR", "Availability Req."),
         ("MAV", "Modified Attack Vector"),
         ("MAC", "Modified Attack Complexity"),
         ("MAT", "Modified Attack Requirement"),
@@ -95,10 +101,12 @@ METRICS_ABBREVIATIONS = OrderedDict(
         ("MSC", "Modified Subsequent System Impact Confidentiality"),
         ("MSI", "Modified Subsequent System Impact Integrity"),
         ("MSA", "Modified Subsequent System Impact Availability"),
-        ("CR", "Confidentiality Req."),
-        ("IR", "Integrity Req."),
-        ("AR", "Availability Req."),
-        ("E", "Exploit Maturity"),
+        ("S", "Safety"),
+        ("AU", "Automatable"),
+        ("R", "Recovery"),
+        ("V", "Value Density"),
+        ("RE", "Vulnerability Response Effort"),
+        ("U", "Provider Urgency"),
     ]
 )
 
@@ -115,12 +123,10 @@ METRICS_ABBREVIATIONS_JSON = OrderedDict(
         ("SC", "subsequentSystemImpactConfidentiality"),
         ("SI", "subsequentSystemImpactIntegrity"),
         ("SA", "subsequentSystemImpactAvailability"),
-        ("S", "safety"),
-        ("AU", "automatable"),
-        ("R", "recovery"),
-        ("V", "valueDensity"),
-        ("RE", "vulnerabilityResponseEffort"),
-        ("U", "providerUrgency"),
+        ("E", "exploitMaturity"),
+        ("CR", "confidentialityRequirements"),
+        ("IR", "integrityRequirements"),
+        ("AR", "availabilityRequirements"),
         ("MAV", "modifiedAttackVector"),
         ("MAC", "modifiedAttackComplexity"),
         ("MAT", "modifiedAttackRequirement"),
@@ -132,10 +138,12 @@ METRICS_ABBREVIATIONS_JSON = OrderedDict(
         ("MSC", "modifiedSubsequentSystemImpactConfidentiality"),
         ("MSI", "modifiedSubsequentSystemImpactIntegrity"),
         ("MSA", "modifiedSubsequentSystemImpactAvailability"),
-        ("CR", "confidentialityRequirements"),
-        ("IR", "integrityRequirements"),
-        ("AR", "availabilityRequirements"),
-        ("E", "exploitMaturity"),
+        ("S", "safety"),
+        ("AU", "automatable"),
+        ("R", "recovery"),
+        ("V", "valueDensity"),
+        ("RE", "vulnerabilityResponseEffort"),
+        ("U", "providerUrgency"),
     ]
 )
 
@@ -155,28 +163,15 @@ METRICS_VALUE_NAMES = OrderedDict(
         ("SC", OrderedDict([("H", "High"), ("L", "Low"), ("N", "None")])),
         ("SI", OrderedDict([("H", "High"), ("L", "Low"), ("N", "None")])),
         ("SA", OrderedDict([("H", "High"), ("L", "Low"), ("N", "None")])),
-        ("S", OrderedDict([("X", "Not Defined"), ("N", "Negligible"), ("P", "Present")])),
-        ("AU", OrderedDict([("X", "Not Defined"), ("N", "No"), ("Y", "Yes")])),
         (
-            "R",
+            "E",
             OrderedDict(
-                [("X", "Not Defined"), ("A", "Automatic"), ("U", "User"), ("I", "Inrecoverable")]
+                [("X", "Not Defined"), ("A", "Attacked"), ("P", "POC"), ("U", "Unreported")]
             ),
         ),
-        ("V", OrderedDict([("X", "Not Defined"), ("D", "Diffuse"), ("C", "Concentrated")])),
-        ("RE", OrderedDict([("X", "Not Defined"), ("L", "Low"), ("M", "Moderate"), ("H", "High")])),
-        (
-            "U",
-            OrderedDict(
-                [
-                    ("X", "Not Defined"),
-                    ("Clear", "Clear"),
-                    ("Green", "Green"),
-                    ("Amber", "Amber"),
-                    ("Red", "Red"),
-                ]
-            ),
-        ),
+        ("CR", OrderedDict([("X", "Not Defined"), ("H", "High"), ("M", "Medium"), ("L", "Low")])),
+        ("IR", OrderedDict([("X", "Not Defined"), ("H", "High"), ("M", "Medium"), ("L", "Low")])),
+        ("AR", OrderedDict([("X", "Not Defined"), ("H", "High"), ("M", "Medium"), ("L", "Low")])),
         (
             "MAV",
             OrderedDict(
@@ -227,13 +222,26 @@ METRICS_VALUE_NAMES = OrderedDict(
                 ]
             ),
         ),
-        ("CR", OrderedDict([("X", "Not Defined"), ("H", "High"), ("M", "Medium"), ("L", "Low")])),
-        ("IR", OrderedDict([("X", "Not Defined"), ("H", "High"), ("M", "Medium"), ("L", "Low")])),
-        ("AR", OrderedDict([("X", "Not Defined"), ("H", "High"), ("M", "Medium"), ("L", "Low")])),
+        ("S", OrderedDict([("X", "Not Defined"), ("N", "Negligible"), ("P", "Present")])),
+        ("AU", OrderedDict([("X", "Not Defined"), ("N", "No"), ("Y", "Yes")])),
         (
-            "E",
+            "R",
             OrderedDict(
-                [("X", "Not Defined"), ("A", "Attacked"), ("P", "POC"), ("U", "Unreported")]
+                [("X", "Not Defined"), ("A", "Automatic"), ("U", "User"), ("I", "Inrecoverable")]
+            ),
+        ),
+        ("V", OrderedDict([("X", "Not Defined"), ("D", "Diffuse"), ("C", "Concentrated")])),
+        ("RE", OrderedDict([("X", "Not Defined"), ("L", "Low"), ("M", "Moderate"), ("H", "High")])),
+        (
+            "U",
+            OrderedDict(
+                [
+                    ("X", "Not Defined"),
+                    ("Clear", "Clear"),
+                    ("Green", "Green"),
+                    ("Amber", "Amber"),
+                    ("Red", "Red"),
+                ]
             ),
         ),
     ]

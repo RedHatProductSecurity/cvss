@@ -607,7 +607,7 @@ class CVSS4(object):
 
     def clean_vector(self, output_prefix=True):
         """
-        Returns vector without optional metrics marked as X and in preferred order.
+        Returns vector without optional metrics marked as X and in the required order.
 
         Args:
             output_prefix (bool): defines if CVSS vector should be printed with prefix
@@ -615,6 +615,10 @@ class CVSS4(object):
         Returns:
             (str): cleaned CVSS4 with metrics in correct order
         """
+        # The metrics from METRICS_ABBREVIATIONS are ordered in accordance with the
+        # CVSS4 specification. Vectors that are not ordered are considered invalid
+        # an may be rejected.
+        # https://www.first.org/cvss/v4-0/specification-document#Vector-String
         vector = []
         for metric in METRICS_ABBREVIATIONS:
             if metric in self.original_metrics:

@@ -248,6 +248,16 @@ class TestCVSS4(unittest.TestCase):
         v = "ABC|AV:N/AC:L/AT:N/PR:L/UI:N/VC:H/VI:L/VA:N/SC:H/SI:N/SA:L"
         self.assertRaises(CVSS4RHMalformedError, CVSS4.from_rh_vector, v)
 
+    def test_clean_vector_field_order(self):
+        # This vector is sorted following the specification requirement and
+        # should match the clean_vector.
+        v = (
+            "CVSS:4.0/AV:P/AC:H/AT:P/PR:H/UI:A/VC:N/VI:N/VA:N/SC:N/SI:N/SA:N/"
+            "E:U/CR:L/IR:L/AR:L/MAV:P/MAC:H/MAT:P/MPR:H/MUI:A/MVC:N/MVI:N/"
+            "MVA:N/MSC:N/MSI:N/MSA:N/S:P/AU:Y/R:I/V:C/RE:H/U:Red"
+        )
+        self.assertEqual(CVSS4(v).clean_vector(), v, "Invalid CVSS4 metric field order")
+
 
 if __name__ == "__main__":
     unittest.main()
