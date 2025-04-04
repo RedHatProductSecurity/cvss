@@ -31,6 +31,7 @@ Library
     print(vector)
     print(c.clean_vector())
     print(c.scores())
+    print(c.severities())
 
     print()
 
@@ -46,8 +47,9 @@ Library
     vector = 'CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:N'
     c = CVSS4(vector)
     print(vector)
-    print(c.base_score)
-    print(c.severity)
+    print(c.clean_vector())
+    print(c.scores())
+    print(c.severities())
 
 Sample output:
 
@@ -56,6 +58,7 @@ Sample output:
    AV:L/AC:L/Au:M/C:N/I:P/A:C/E:U/RL:W/RC:ND/CDP:L/TD:H/CR:ND/IR:ND/AR:M
    AV:L/AC:L/Au:M/C:N/I:P/A:C/E:U/RL:W/CDP:L/TD:H/AR:M
    (5.0, 4.0, 4.6)
+   ('Medium', 'Medium', 'Medium')
 
    CVSS:3.0/S:C/C:H/I:H/A:N/AV:P/AC:H/PR:H/UI:R/E:H/RL:O/RC:R/CR:H/IR:X/AR:X/MAC:H/MPR:X/MUI:X/MC:L/MA:X
    CVSS:3.0/AV:P/AC:H/PR:H/UI:R/S:C/C:H/I:H/A:N/E:H/RL:O/RC:R/CR:H/MAC:H/MC:L
@@ -63,8 +66,9 @@ Sample output:
    ('Medium', 'Medium', 'Medium')
 
    CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:N
-   9.9
-   Critical
+   CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:N
+   (9.9,)
+   ('Critical',)
 
 Interactive calculator
 ~~~~~~~~~~~~~~~~~~~~~~
