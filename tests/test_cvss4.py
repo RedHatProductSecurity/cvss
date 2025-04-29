@@ -87,7 +87,7 @@ class TestCVSS4(unittest.TestCase):
             "MPR:L/MUI:A/MVC:L/MVI:N/MVA:H/MSC:H/MSI:L/MSA:N/CR:H/IR:L/AR:L/E:P"
         )
         self.assertEqual(("Low"), CVSS4(v).severity, v)
-        self.assertEqual(("Low"), CVSS4(v).as_json()["baseSeverity"], v)
+        self.assertEqual(("Low".upper()), CVSS4(v).as_json()["baseSeverity"], v)
 
         v = (
             "CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:P/VC:N/VI:L/VA:L/"
@@ -95,7 +95,7 @@ class TestCVSS4(unittest.TestCase):
             "/MPR:N/MUI:P/MVC:L/MVI:N/MVA:H/MSC:H/MSI:H/MSA:S/CR:M/IR:M/AR:M/E:A"
         )
         self.assertEqual(("High"), CVSS4(v).severity, v)
-        self.assertEqual(("High"), CVSS4(v).as_json()["baseSeverity"], v)
+        self.assertEqual(("High".upper()), CVSS4(v).as_json()["baseSeverity"], v)
 
         v = (
             "CVSS:4.0/AV:N/AC:H/AT:P/PR:H/UI:A/VC:L/VI:N/VA:N/"
@@ -103,7 +103,7 @@ class TestCVSS4(unittest.TestCase):
             "/MPR:H/MUI:P/MVC:L/MVI:H/MVA:L/MSC:N/MSI:H/MSA:H/CR:L/IR:H/AR:M/E:U"
         )
         self.assertEqual(("Low"), CVSS4(v).severity, v)
-        self.assertEqual(("Low"), CVSS4(v).as_json()["baseSeverity"], v)
+        self.assertEqual(("Low".upper()), CVSS4(v).as_json()["baseSeverity"], v)
 
         v = (
             "CVSS:4.0/AV:A/AC:H/AT:N/PR:N/UI:A/VC:L/VI:L/VA:N/"
@@ -111,7 +111,7 @@ class TestCVSS4(unittest.TestCase):
             "/MPR:N/MUI:P/MVC:N/MVI:L/MVA:L/MSC:H/MSI:N/MSA:L/CR:M/IR:M/AR:L/E:U"
         )
         self.assertEqual(("Low"), CVSS4(v).severity, v)
-        self.assertEqual(("Low"), CVSS4(v).as_json()["baseSeverity"], v)
+        self.assertEqual(("Low".upper()), CVSS4(v).as_json()["baseSeverity"], v)
 
         v = (
             "CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:A/VC:H/VI:H/VA:N/"
@@ -119,7 +119,7 @@ class TestCVSS4(unittest.TestCase):
             "/MPR:H/MUI:P/MVC:L/MVI:L/MVA:N/MSC:H/MSI:H/MSA:S/CR:H/IR:H/AR:H/E:P"
         )
         self.assertEqual(("Medium"), CVSS4(v).severity, v)
-        self.assertEqual(("Medium"), CVSS4(v).as_json()["baseSeverity"], v)
+        self.assertEqual(("Medium".upper()), CVSS4(v).as_json()["baseSeverity"], v)
 
         v = (
             "CVSS:4.0/AV:N/AC:L/AT:N/PR:H/UI:N/VC:L/VI:L/VA:H/"
@@ -127,11 +127,11 @@ class TestCVSS4(unittest.TestCase):
             "/MPR:H/MUI:N/MVC:N/MVI:L/MVA:N/MSC:L/MSI:S/MSA:H/CR:H/IR:M/AR:M/E:A"
         )
         self.assertEqual(("Medium"), CVSS4(v).severity, v)
-        self.assertEqual(("Medium"), CVSS4(v).as_json()["baseSeverity"], v)
+        self.assertEqual(("Medium".upper()), CVSS4(v).as_json()["baseSeverity"], v)
 
         v = "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:L/VI:L/VA:L/SC:L/SI:L/SA:L"
         self.assertEqual(("Medium"), CVSS4(v).severity, v)
-        self.assertEqual(("Medium"), CVSS4(v).as_json()["baseSeverity"], v)
+        self.assertEqual(("Medium".upper()), CVSS4(v).as_json()["baseSeverity"], v)
 
         v = (
             "CVSS:4.0/AV:A/AC:H/AT:P/PR:N/UI:P/VC:N/VI:L/VA:N/"
@@ -139,7 +139,7 @@ class TestCVSS4(unittest.TestCase):
             "/MPR:L/MUI:A/MVC:N/MVI:L/MVA:H/MSC:L/MSI:N/MSA:S/CR:L/IR:L/AR:M/E:P"
         )
         self.assertEqual(("Low"), CVSS4(v).severity, v)
-        self.assertEqual(("Low"), CVSS4(v).as_json()["baseSeverity"], v)
+        self.assertEqual(("Low".upper()), CVSS4(v).as_json()["baseSeverity"], v)
 
         v = (
             "CVSS:4.0/AV:A/AC:H/AT:N/PR:H/UI:A/VC:H/VI:N/VA:H/"
@@ -147,7 +147,7 @@ class TestCVSS4(unittest.TestCase):
             "/MPR:N/MUI:N/MVC:H/MVI:H/MVA:H/MSC:H/MSI:S/MSA:S/CR:H/IR:H/AR:H/E:U"
         )
         self.assertEqual(("Critical"), CVSS4(v).severity, v)
-        self.assertEqual(("Critical"), CVSS4(v).as_json()["baseSeverity"], v)
+        self.assertEqual(("Critical".upper()), CVSS4(v).as_json()["baseSeverity"], v)
 
         v = (
             "CVSS:4.0/AV:N/AC:H/AT:N/PR:H/UI:P/VC:L/VI:N/VA:H/"
@@ -155,7 +155,7 @@ class TestCVSS4(unittest.TestCase):
             "/MPR:N/MUI:A/MVC:L/MVI:H/MVA:H/MSC:N/MSI:H/MSA:L/CR:L/IR:H/AR:L/E:U"
         )
         self.assertEqual(("Medium"), CVSS4(v).severity, v)
-        self.assertEqual(("Medium"), CVSS4(v).as_json()["baseSeverity"], v)
+        self.assertEqual(("Medium".upper()), CVSS4(v).as_json()["baseSeverity"], v)
 
         v = (
             "CVSS:4.0/AV:L/AC:H/AT:N/PR:N/UI:N/VC:L/VI:N/VA:H/"
@@ -163,7 +163,7 @@ class TestCVSS4(unittest.TestCase):
             "/MPR:L/MUI:P/MVC:N/MVI:N/MVA:N/MSC:N/MSI:N/MSA:N/CR:H/IR:H/AR:H/E:P"
         )
         self.assertEqual(("None"), CVSS4(v).severity, v)
-        self.assertEqual(("None"), CVSS4(v).as_json()["baseSeverity"], v)
+        self.assertEqual(("None".upper()), CVSS4(v).as_json()["baseSeverity"], v)
 
     def test_json_schema_no_impact_metrics(self):
         v = "CVSS:4.0/AV:A/AC:H/AT:P/PR:L/UI:P/VC:N/VI:N/VA:N/SC:N/SI:N/SA:N"
@@ -186,7 +186,7 @@ class TestCVSS4(unittest.TestCase):
         # Selectively test some values
         self.assertEqual(json_data["baseScore"], 7.9)
         self.assertEqual(json_data["vectorString"], v)
-        self.assertIn("availabilityRequirements", json_data)
+        self.assertIn("availabilityRequirement", json_data)
 
     def test_json_schema_high_msi(self):
         v = "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:N/SA:N/MSI:H"
@@ -194,8 +194,8 @@ class TestCVSS4(unittest.TestCase):
         # Selectively test some values
         self.assertEqual(json_data["baseScore"], 7.7)
         self.assertEqual(json_data["vectorString"], v)
-        self.assertIn("modifiedSubsequentSystemImpactIntegrity", json_data)
-        self.assertIn("subsequentSystemImpactIntegrity", json_data)
+        self.assertIn("modifiedSubIntegrityImpact", json_data)
+        self.assertIn("subIntegrityImpact", json_data)
 
     def test_invalid_metric_key(self):
         v = "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:N/VI:N/VA:N/SC:N/SI:N/SA:N/JJ:H"
