@@ -1,11 +1,7 @@
 import codecs
 from os import path
-import sys
 
 from setuptools import find_packages, setup
-
-if sys.version_info < (3, 6):
-    print("Warning: Package does not support Python 2.7 or older.")
 
 try:
     from collections import OrderedDict  # noqa
@@ -49,8 +45,6 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Security",
         "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
-        # "Programming Language :: Python :: 2",
-        # "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
