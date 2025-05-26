@@ -2,11 +2,10 @@ CVSS
 ====
 
 This Python package contains CVSS v2, v3 and v4 computation utilities and
-interactive calculator (for v2 and v3 only) compatible with both Python 2 and Python 3.
+interactive calculator (for v2 and v3 only) compatible with Python 3.
 
 The library is tested on all currently-supported Python versions available
-via GitHub Actions (with the exception of Python 2.7 or lower, which is EOL but
-still tested against), but it is simple enough to run on even older versions.
+via GitHub Actions but it is simple enough to run on even older versions.
 
 Installation
 ------------
