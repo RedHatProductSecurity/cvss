@@ -1,11 +1,11 @@
 import codecs
 from os import path
-import sys
+# import sys
 
 from setuptools import find_packages, setup
 
-if sys.version_info < (3, 6):
-    print("Warning: Package does not support Python 2.7 or older.")
+# if sys.version_info < (3, 6):
+#     print("Warning: Package does not support Python 2.7 or older.")
 
 try:
     from collections import OrderedDict  # noqa
