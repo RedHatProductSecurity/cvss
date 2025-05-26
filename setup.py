@@ -45,8 +45,8 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Security",
         "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
-        # "Programming Language :: Python :: 2",
-        # "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
@@ -59,8 +59,6 @@ setup(
     ],
     keywords="security cvss score calculator",
     packages=find_packages(),
-    python_requires='>=3.6',
-    # given restrictions to install in py27
     install_requires=dependencies,
     tests_require=["jsonschema"],
     entry_points={
