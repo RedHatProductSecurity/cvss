@@ -2,7 +2,9 @@ CVSS
 ====
 
 This Python package contains CVSS v2, v3 and v4 computation utilities and
-interactive calculator (for v2 and v3 only) compatible with Python 3.
+interactive calculator (for v2 and v3 only) compatible with Python 3. CVSS
+(Common Vulnerability Scoring System) is an standardized method for rating
+the severity of security issues on a scale from 0 (no impact) to 10 (critical).
 
 The library is tested on all currently-supported Python versions available
 via GitHub Actions but it is simple enough to run on even older versions.
