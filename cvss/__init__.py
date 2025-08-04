@@ -8,4 +8,4 @@ from .cvss4 import CVSS4
 from .exceptions import CVSS2Error, CVSS3Error, CVSS4Error, CVSSError
 from .interactive import ask_interactively
 
-__version__ = "3.5"
+__version__ = "3.6"
