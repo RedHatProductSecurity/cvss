@@ -57,6 +57,8 @@ from .exceptions import (
     CVSS4RHScoreDoesNotMatch,
 )
 
+NONMANDATORY_METRICS = [metric for metric in METRICS if metric not in METRICS_MANDATORY]
+
 
 def final_rounding(x):
     """
@@ -703,10 +705,6 @@ class CVSS4(object):
         """
 
         def us(text):
-            # If this is the (modified) attack vector description, convert it from "adjacent" to
-            # "adjacent network" as defined by the schema.
-            if text == "Adjacent":
-                return "ADJACENT_NETWORK"
             # Uppercase and convert to snake case
             return text.upper().replace("-", "_").replace(" ", "_")
 
@@ -715,14 +713,18 @@ class CVSS4(object):
             data[k] = us(self.get_value_description(metric))
 
         data = {
-            "version": "4",
+            "version": "4.0",
             "vectorString": self.vector,
         }
 
-        for metric in METRICS:
+        for metric in METRICS_MANDATORY:
             add_metric_to_data(metric)
+        if not minimal or any(metric in self.original_metrics for metric in NONMANDATORY_METRICS):
+            for metric in NONMANDATORY_METRICS:
+                add_metric_to_data(metric)
+
         data["baseScore"] = float(self.base_score)
-        data["baseSeverity"] = self.severity
+        data["baseSeverity"] = self.severity.upper()
 
         if sort:
             data = OrderedDict(sorted(data.items()))
